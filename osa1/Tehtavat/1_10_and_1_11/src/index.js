@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom'
 
 const Otsikko = (props) => {
   return (
-    <div>
-      <h1>{props.otsikko}</h1>
-    </div>
+    <table>
+      <tbody>
+        <tr><th height="60"><font size="5">{props.otsikko}</font></th></tr>
+      </tbody>
+    </table>
   )
 }
 
@@ -35,20 +37,20 @@ const Statistics = (props) => {
 
   if (osat[0].arvo === 0 && osat[1].arvo === 0 && osat[1].arvo === 0) {
     return (
-      <div>Ei yhtään palautetta annettu</div>
+      <table><tbody><tr><td>Ei yhtään palautetta annettu</td></tr></tbody></table>
     )
   }
   else {
     return (
-      <div>
-
-        <Statistic nimi={osat[0].nimi} arvo={osat[0].arvo} />
-        <Statistic nimi={osat[1].nimi} arvo={osat[1].arvo} />
-        <Statistic nimi={osat[2].nimi} arvo={osat[2].arvo} />
-        <Statistic nimi={osat[3].nimi} arvo={osat[3].arvo} />
-        <Statistic nimi={osat[4].nimi} arvo={osat[4].arvo} />
-
-      </div>
+      <table>
+        <tbody>
+          <tr><td><Statistic nimi={osat[0].nimi} arvo={osat[0].arvo} /></td></tr>
+          <tr><td><Statistic nimi={osat[1].nimi} arvo={osat[1].arvo} /></td></tr>
+          <tr><td><Statistic nimi={osat[2].nimi} arvo={osat[2].arvo} /></td></tr>
+          <tr><td><Statistic nimi={osat[3].nimi} arvo={osat[3].arvo} /></td></tr>
+          <tr><td><Statistic nimi={osat[4].nimi} arvo={osat[4].arvo} /></td></tr>
+        </tbody>
+      </table>
     )
   }
 }
@@ -57,14 +59,14 @@ const Statistics = (props) => {
 const Statistic = (props) => {
   return (
     <div>
-      {props.nimi} {props.arvo}<bR></bR>
+      {props.nimi} {props.arvo}<br></br>
     </div>
   )
 }
 
 const Button = (props) => {
   return (
-    <button onClick={props.handleClick}>{props.text}</button>
+    <button background-color="#FFFFFF !important"  onClick={props.handleClick}>{props.text}</button>
   )
 }
 
@@ -86,22 +88,20 @@ class App extends React.Component {
   klikButton = (propertyName, value) => {
     return () => {
       this.setState({
-      [propertyName]: value + 1
-     })
+        [propertyName]: value + 1
+      })
     }
   }
 
   render() {
     return (
       <div>
-        <div>
-          <Otsikko otsikko={this.unicafeSovellus.annaPalautetta} />
-          <Button handleClick={this.klikButton('hyva', this.state.hyva)} text={'hyva'} />
-          <Button handleClick={this.klikButton('neutraali', this.state.neutraali)} text={'neutraali'} />
-          <Button handleClick={this.klikButton('huono', this.state.huono)}  text={'huono'} />
-          <Otsikko otsikko={this.unicafeSovellus.statistiikka} />
-          <Statistics sisalto={this.state} />
-        </div>
+        <Otsikko otsikko={this.unicafeSovellus.annaPalautetta} />
+        <Button handleClick={this.klikButton('hyva', this.state.hyva)} text={'hyva'} />
+        <Button handleClick={this.klikButton('neutraali', this.state.neutraali)} text={'neutraali'} />
+        <Button handleClick={this.klikButton('huono', this.state.huono)} text={'huono'} />
+        <Otsikko otsikko={this.unicafeSovellus.statistiikka} />
+        <Statistics sisalto={this.state} />
       </div>
     )
   }
