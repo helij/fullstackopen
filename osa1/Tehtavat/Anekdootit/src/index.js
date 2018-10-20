@@ -11,23 +11,39 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      selected: 0
+      selected: 0,
+      points: {0:0,1:0,2:0,3:0,4:0,5:0}
     }
   }
 
+  
+
   klikButton = (endValue) => {
-    return () => {
+    return () => {      
       this.setState({
-        selected: Math.floor(Math.random() * endValue)
+        selected: Math.floor(Math.random() * endValue),
       })
     }
   }
 
+  klikVoteButton = () => {
+    return () => {      
+      let points = {...this.state.points};
+      points[this.state.selected] += 1
+      this.setState({
+        points
+      })
+    }
+  }
+
+
   render() {
     return (
       <div>
-        {this.props.anecdotes[this.state.selected]}
+        {this.props.anecdotes[this.state.selected]}<br></br>
+        has {this.state.points[this.state.selected]} votes
         <br></br>
+        <Button handleClick={this.klikVoteButton()} text={'vote'} />
         <Button handleClick={this.klikButton(this.props.anecdotes.length)} text={'next anecdote'} />
       </div>
     )
