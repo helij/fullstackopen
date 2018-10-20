@@ -7,19 +7,40 @@ const Button = (props) => {
   )
 }
 
+const MostVotes = (props) => {
+  var obj = props.points;
+  var maxKey = Object.keys(obj).reduce((a, b) => obj[a] > obj[b] ? a : b);
+  if (props.voteClicked) {
+    return (
+      <div>
+        <h2>Anecdote with most votes:</h2>
+        {props.anecdotes[maxKey]}<br></br>
+        has {props.points[maxKey]} votes
+      </div>
+    )
+  }
+  else {
+    return (
+      <div>
+      </div>
+    )
+  }
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       selected: 0,
-      points: {0:0,1:0,2:0,3:0,4:0,5:0}
+      points: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+      voteClicked: false
     }
   }
 
-  
+
 
   klikButton = (endValue) => {
-    return () => {      
+    return () => {
       this.setState({
         selected: Math.floor(Math.random() * endValue),
       })
@@ -27,14 +48,16 @@ class App extends React.Component {
   }
 
   klikVoteButton = () => {
-    return () => {      
-      let points = {...this.state.points};
+    return () => {
+      let points = { ...this.state.points };
       points[this.state.selected] += 1
       this.setState({
-        points
+        points,
+        voteClicked: true
       })
     }
   }
+
 
 
   render() {
@@ -45,6 +68,7 @@ class App extends React.Component {
         <br></br>
         <Button handleClick={this.klikVoteButton()} text={'vote'} />
         <Button handleClick={this.klikButton(this.props.anecdotes.length)} text={'next anecdote'} />
+        <MostVotes anecdotes={this.props.anecdotes} points={this.state.points} voteClicked={this.state.voteClicked} />
       </div>
     )
   }
