@@ -5,24 +5,21 @@ class App extends React.Component {
         super(props)
         this.state = {
             persons: [
-                {
-                    name: 'Arto Hellas',
-                    number:'040-123456'
-                },
-                {
-                    name: 'Esko Ukkonen',
-                    number:'09-546272'
-                }
+                { name: 'Arto Hellas', number: '040-123456' },
+                { name: 'Martti Tienari', number: '040-123456' },
+                { name: 'Arto Järvinen', number: '040-123456' },
+                { name: 'Lea Kutvonen', number: '040-123456' }
             ],
             newName: '',
-            newNumber: ''
+            newNumber: '',
+            filter: ''
 
         }
     }
 
     addName = (event) => {
         event.preventDefault()
-        if (!this.state.persons.map(person=>person.name).includes(this.state.newName)) {
+        if (!this.state.persons.map(person => person.name).includes(this.state.newName)) {
             const personObject = {
                 name: this.state.newName,
                 number: this.state.newNumber
@@ -32,28 +29,35 @@ class App extends React.Component {
                 persons
             })
         }
-        else{
+        else {
             alert("Nimi löytyy jo!")
         }
-        console.log('event.target.', event.target)
-        console.log('event.target.value', event.target.value)
     }
 
 
     handleNameChange = (event) => {
-        console.log(event.target.value)
         this.setState({ newName: event.target.value })
     }
 
     handleNumberChange = (event) => {
-        console.log(event.target.value)
         this.setState({ newNumber: event.target.value })
+    }
+
+    handleFilter = (event) => {
+        this.setState({ filter: event.target.value })
     }
 
     render() {
         return (
             <div>
                 <h2>Puhelinluettelo</h2>
+                <div>
+                    rajaa näytettäviä: <input
+                        value={this.state.filter}
+                        onChange={this.handleFilter}
+                    />
+                </div>
+                <h2>Lisää uusi</h2>
                 <form onSubmit={this.addName}>
                     <div>
                         nimi: <input
@@ -70,12 +74,12 @@ class App extends React.Component {
                     <div>
                         <button type="submit">lisää</button>
                     </div>
-                    
+
                 </form>
                 <h2>Numerot</h2>
-                {this.state.persons.map(person =>
+                {this.state.persons.filter(person =>  person.name.toUpperCase().includes(this.state.filter.toUpperCase())).map(person =>
                     <div key={person.name}>
-                        {person.name} {person.number} 
+                        {person.name} {person.number}
                     </div>
                 )}
 
