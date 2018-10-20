@@ -6,11 +6,9 @@ class App extends React.Component {
         this.state = {
             persons: [
                 {
-                    id: 1,
                     name: 'Arto Hellas'
                 },
                 {
-                    id: 2,
                     name: 'Esko Ukkonen'
                 }
             ],
@@ -20,10 +18,18 @@ class App extends React.Component {
 
     addName = (event) => {
         event.preventDefault()
-        //const persons = this.state.persons.concat({name: })
-        //  this.setState({
-        //    persons
-        //})
+        if (!this.state.persons.map(person=>person.name).includes(this.state.newName)) {
+            const noteObject = {
+                name: this.state.newName,
+            }
+            const persons = this.state.persons.concat(noteObject)
+            this.setState({
+                persons
+            })
+        }
+        else{
+            alert("Nimi löytyy jo!")
+        }
         console.log('event.target.', event.target)
         console.log('event.target.value', event.target.value)
     }
@@ -37,7 +43,6 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                debug: {this.state.newName}
                 <h2>Puhelinluettelo</h2>
                 <form onSubmit={this.addName}>
                     <div>
@@ -52,12 +57,12 @@ class App extends React.Component {
                 </form>
                 <h2>Numerot</h2>
                 {this.state.persons.map(person =>
-                    <div key={person.id}>
+                    <div key={person.name}>
                         {person.name}
-                </div>
+                    </div>
                 )}
-            
-      </div>
+
+            </div>
 
         )
     }
