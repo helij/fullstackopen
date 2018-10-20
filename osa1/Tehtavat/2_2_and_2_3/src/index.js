@@ -27,13 +27,6 @@ const Sisalto = (props) => {
   )
 }
 
-const Note = ({ note }) => {
-  return (
-    <li>{note.content}</li>
-  )
-}
-
-
 const Osa = (props) => {
   return (
     <div>
