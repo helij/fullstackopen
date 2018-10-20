@@ -1,4 +1,6 @@
 import React from 'react';
+import Filter from './components/Filter'
+import Data from './components/Data'
 
 class App extends React.Component {
     constructor(props) {
@@ -7,7 +9,7 @@ class App extends React.Component {
             persons: [
                 { name: 'Arto Hellas', number: '040-123456' },
                 { name: 'Martti Tienari', number: '040-123456' },
-                { name: 'Arto Järvinen', number: '040-123456' },
+                { name: 'Arto Järvinen', number: '040-111111' },
                 { name: 'Lea Kutvonen', number: '040-123456' }
             ],
             newName: '',
@@ -51,12 +53,7 @@ class App extends React.Component {
         return (
             <div>
                 <h2>Puhelinluettelo</h2>
-                <div>
-                    rajaa näytettäviä: <input
-                        value={this.state.filter}
-                        onChange={this.handleFilter}
-                    />
-                </div>
+                <Filter value={this.state.filter} change={this.handleFilter} />
                 <h2>Lisää uusi</h2>
                 <form onSubmit={this.addName}>
                     <div>
@@ -77,12 +74,7 @@ class App extends React.Component {
 
                 </form>
                 <h2>Numerot</h2>
-                {this.state.persons.filter(person =>  person.name.toUpperCase().includes(this.state.filter.toUpperCase())).map(person =>
-                    <div key={person.name}>
-                        {person.name} {person.number}
-                    </div>
-                )}
-
+                <Data persons={this.state.persons} filter={this.state.filter} />
             </div>
 
         )
