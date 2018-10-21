@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios'
 import Filter from './components/Filter'
 import Data from './components/Data'
+import personService from './services/persons'
 
 class App extends React.Component {
     constructor(props) {
@@ -16,15 +17,12 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        console.log('did mount')
-        axios
-          .get('http://localhost:3001/persons')
-          .then(response => {
-            console.log('promise fulfilled')
-            this.setState({ persons: response.data })
-          })
-      }
-    
+        personService.getAll()
+            .then(persons => {
+                this.setState({ persons })
+            })
+    }
+
 
     addName = (event) => {
         event.preventDefault()
@@ -38,10 +36,10 @@ class App extends React.Component {
                 persons
             })
 
-            axios.post('http://localhost:3001/persons', personObject)
-            .then(response => {
-              console.log(response)
-            })
+            personService.create(personObject)
+                .then(response => {
+                    console.log(response)
+                })
         }
         else {
             alert("Nimi löytyy jo!")
