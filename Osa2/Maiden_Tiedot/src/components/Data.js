@@ -2,9 +2,16 @@ import React from 'react'
 
 const Data = (props) => {
 
-    const countries = props.countries.filter(person => person.name.toUpperCase().includes(props.filter.toUpperCase()))
+    let countries = []
 
-    if (props.filter.length === 0) {
+    if (props.filter.length > 0) {
+        countries = props.countries.filter(person => person.name.toUpperCase().includes(props.filter.toUpperCase()))
+    }
+    else {
+        countries = props.countries
+    }
+
+    if (props.filter.length === 0 && countries.length > 1) {
         return (
             <div></div>
         )
@@ -31,7 +38,7 @@ const Data = (props) => {
     else {
         return (
             countries.map(country =>
-                <div key={country.name}>
+                <div key={country.name} onClick={e => props.countryClick(e, country.name)}>
                     {country.name}
                 </div>
             )
