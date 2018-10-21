@@ -37,6 +37,11 @@ class App extends React.Component {
             this.setState({
                 persons
             })
+
+            axios.post('http://localhost:3001/persons', personObject)
+            .then(response => {
+              console.log(response)
+            })
         }
         else {
             alert("Nimi löytyy jo!")
