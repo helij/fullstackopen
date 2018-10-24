@@ -8,6 +8,11 @@ const Filter = (props) => {
                 onChange={props.change}
             />
         </div>
+
+
+
+
+
     )
     
   }

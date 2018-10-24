@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios'
 import Filter from './components/Filter'
 import Data from './components/Data'
 import personService from './services/persons'
@@ -31,14 +30,12 @@ class App extends React.Component {
                 name: this.state.newName,
                 number: this.state.newNumber
             }
-            const persons = this.state.persons.concat(personObject)
-            this.setState({
-                persons
-            })
-
             personService.create(personObject)
                 .then(response => {
-                    console.log(response)
+                    const persons = this.state.persons.concat(response)
+                    this.setState({
+                        persons
+                    })
                 })
         }
         else {
@@ -46,6 +43,20 @@ class App extends React.Component {
         }
     }
 
+
+    handleDelete = (event, person) => {
+        event.preventDefault()
+        if (window.confirm("poistetaanko " + person.name)) {
+            personService.deletePerson(person.id)
+                .then(response => {
+                    const persons = this.state.persons.filter(p => p.id !== person.id);
+                    this.setState({
+                        persons
+                    })
+                })
+        }
+
+    }
 
     handleNameChange = (event) => {
         this.setState({ newName: event.target.value })
@@ -84,7 +95,7 @@ class App extends React.Component {
 
                 </form>
                 <h2>Numerot</h2>
-                <Data persons={this.state.persons} filter={this.state.filter} />
+                <Data persons={this.state.persons} filter={this.state.filter} handleDelete={this.handleDelete} />
             </div>
 
         )
