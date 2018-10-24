@@ -23,7 +23,7 @@ class App extends React.Component {
     }
 
 
-    addName = (event) => {
+    addPerson = (event) => {
         event.preventDefault()
         if (!this.state.persons.map(person => person.name).includes(this.state.newName)) {
             const personObject = {
@@ -39,7 +39,16 @@ class App extends React.Component {
                 })
         }
         else {
-            alert("Nimi löytyy jo!")
+            if (window.confirm(this.state.newName + " on jo luettelossa, korvataanko vanha numero uudella?")) {
+                const person = this.state.persons.find(person => person.name === this.state.newName)
+                person.number = this.state.newNumber
+                personService.update(person.id, person).then(response => {
+                    const persons = this.state.persons.filter(p => p.name !== this.state.newName).concat(response)
+                    this.setState({
+                        persons
+                    })
+                })
+            }
         }
     }
 
@@ -76,7 +85,7 @@ class App extends React.Component {
                 <h2>Puhelinluettelo</h2>
                 <Filter value={this.state.filter} change={this.handleFilter} />
                 <h2>Lisää uusi</h2>
-                <form onSubmit={this.addName}>
+                <form onSubmit={this.addPerson}>
                     <div>
                         nimi: <input
                             value={this.state.newName}
