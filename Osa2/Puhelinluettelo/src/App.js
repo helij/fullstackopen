@@ -12,9 +12,9 @@ class App extends React.Component {
             newName: '',
             newNumber: '',
             filter: '',
-            added:null,
-            removed:null,
-            changed:null
+            added: null,
+            removed: null,
+            changed: null
         }
     }
 
@@ -57,6 +57,9 @@ class App extends React.Component {
                         persons,
                         changed: `henkilön '${person.name}' uusi numero on '${person.number}' `
                     })
+                }).catch(error => {
+                    alert(`henkilö '${person.name}' on jo valitettavasti poistettu palvelimelta`)
+                    this.setState({ persons: this.state.persons.filter(p => p.name !== this.state.newName) })
                 })
                 setTimeout(() => {
                     this.setState({
@@ -107,11 +110,12 @@ class App extends React.Component {
         return (
             <div>
                 <h2>Puhelinluettelo</h2>
+                <p>Jos poistat jonkun henkilön toisesta selaimesta hieman ennen kun yrität muuttaa henkilön numeroa toisesta selaimesta, tapahtuu virhetilanne:</p>
                 <Notification message={this.state.added} style='added' />
                 <Notification message={this.state.removed} style='removed' />
                 <Notification message={this.state.changed} style='changed' />
                 <Filter value={this.state.filter} change={this.handleFilter} />
-                <h2>Lisää uusi</h2>
+                <h2>Lisää uusi / muuta olemassaolevan numeroa</h2>
                 <form onSubmit={this.addPerson}>
                     <div>
                         nimi: <input
