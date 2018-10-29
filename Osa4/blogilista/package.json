@@ -1,0 +1,19 @@
+{
+  "name": "blogilista",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Heli",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.18.5"
+  },
+  "dependencies": {
+    "dotenv": "^6.1.0",
+    "eslint": "^5.8.0"
+  }
+}
