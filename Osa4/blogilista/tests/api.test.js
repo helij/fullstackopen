@@ -1,7 +1,7 @@
 
 const supertest = require('supertest')
 const Blog = require('../models/blog')
-const  {  app, server } = require('../index')
+const { app, server } = require('../index')
 const api = supertest(app)
 
 
@@ -65,30 +65,55 @@ test('blogs are returned as json', async () => {
     .expect('Content-Type', /application\/json/)
 })
 
-test('POST /api/notes succeeds with valid data', async () => {
-  const blogsAtStart = await blogsInDb()
+describe('post tests', () => {
+  test('POST /api/blogs succeeds with valid data', async () => {
+    const blogsAtStart = await blogsInDb()
 
-  const newBlog = {
-    title: 'Type wars',
-    author: 'Robert C. Martin',
-    url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
-    likes: 2
-  }
+    const newBlog = {
+      title: 'Type wars',
+      author: 'Robert C. Martin',
+      url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+      likes: 2
+    }
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
-  const blogsAfterOperation = await blogsInDb()
+    const blogsAfterOperation = await blogsInDb()
 
-  expect(blogsAfterOperation.length).toBe(blogsAtStart.length + 1)
+    expect(blogsAfterOperation.length).toBe(blogsAtStart.length + 1)
 
-  const title = blogsAfterOperation.map(r => r.title)
-  expect(title).toContain('Type wars')
-})
+    const title = blogsAfterOperation.map(r => r.title)
+    expect(title).toContain('Type wars')
+  })
 
-afterAll(() => {
-  server.close()
+  test('POST /api/blogs likes to zero', async () => {
+    const blogsAtStart = await blogsInDb()
+
+    const newBlog = {
+      title: 'Test Zero',
+      author: 'Robert C. Martin',
+      url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html'
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAfterOperation = await blogsInDb()
+
+    expect(blogsAfterOperation.length).toBe(blogsAtStart.length + 1)
+    const result = blogsAfterOperation.find(a => a.title === 'Test Zero')
+  
+    expect(result.likes).toBe(0)
+  })
+
+  afterAll(() => {
+    server.close()
+  })
 })
