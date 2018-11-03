@@ -1,8 +1,7 @@
 
 const supertest = require('supertest')
 const Blog = require('../models/blog')
-const  { app } = require('../controllers/bloglist')
-const  {  server } = require('../index')
+const  {  app, server } = require('../index')
 const api = supertest(app)
 
 
