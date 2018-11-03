@@ -17,6 +17,31 @@ const favoriteBlog = (blogs) => {
 
 }
 
+const mostBlogs = (blogs) => {
+  let result = blogs.map(a => a.author)
+  var mf = 1
+  var m = 0
+  var item
+  for (var i=0; i<result.length; i++)
+  {
+    for (var j=i; j<result.length; j++)
+    {
+      if (result[i] === result[j])
+        m++
+      if (mf<m)
+      {
+        mf=m
+        item = result[i]
+      }
+    }
+    m=0
+  }
+  return{
+    author: item,
+    blogs: mf
+  }
+}
+
 module.exports = {
-  dummy, totalLikes,favoriteBlog
+  dummy, totalLikes,favoriteBlog, mostBlogs
 }
