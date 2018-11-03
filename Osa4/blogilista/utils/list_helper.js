@@ -18,10 +18,10 @@ const favoriteBlog = (blogs) => {
 }
 
 const mostBlogs = (blogs) => {
-  let result = blogs.map(a => a.author)
-  var mf = 1
-  var m = 0
-  var item
+  const result = blogs.map(a => a.author)
+  let mf = 1
+  let m = 0
+  let item
   for (var i=0; i<result.length; i++)
   {
     for (var j=i; j<result.length; j++)
