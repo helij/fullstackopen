@@ -5,6 +5,11 @@ const  {  app, server } = require('../index')
 const api = supertest(app)
 
 
+const blogsInDb = async () => {
+  const blogs = await Blog.find({})
+  return blogs
+}
+
 const initialBlogs = [
   {
     title: 'React patterns',
@@ -58,6 +63,30 @@ test('blogs are returned as json', async () => {
     .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
+})
+
+test('POST /api/notes succeeds with valid data', async () => {
+  const blogsAtStart = await blogsInDb()
+
+  const newBlog = {
+    title: 'Type wars',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+    likes: 2
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAfterOperation = await blogsInDb()
+
+  expect(blogsAfterOperation.length).toBe(blogsAtStart.length + 1)
+
+  const title = blogsAfterOperation.map(r => r.title)
+  expect(title).toContain('Type wars')
 })
 
 afterAll(() => {
