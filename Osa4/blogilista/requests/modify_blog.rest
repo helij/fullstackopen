@@ -1,9 +1,9 @@
-POST http://localhost:3001/api/blogs/
+PUT http://localhost:3001/api/blogs/5bddc06548b3d827948f7f67
 Content-Type: application/json
 
 {
-    "title": "Uusi 100",
-    "author": "Keijo 3",
+    "title": "Uusi test",
+    "author": "Keijo Taipale",
     "url": "http://test.com",
-    "likes": 9
+    "likes": 12
 }
