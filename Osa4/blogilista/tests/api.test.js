@@ -3,12 +3,7 @@ const supertest = require('supertest')
 const Blog = require('../models/blog')
 const { app, server } = require('../index')
 const api = supertest(app)
-
-
-const blogsInDb = async () => {
-  const blogs = await Blog.find({})
-  return blogs
-}
+const helper = require('./test_helper')
 
 const initialBlogs = [
   {
@@ -49,15 +44,6 @@ const initialBlogs = [
   }
 ]
 
-beforeAll(async () => {
-  await Blog.remove({})
-
-  for (let blog of initialBlogs) {
-    let blogObject = new Blog(blog)
-    await blogObject.save()
-  }
-})
-
 test('blogs are returned as json', async () => {
   await api
     .get('/api/blogs')
@@ -66,8 +52,17 @@ test('blogs are returned as json', async () => {
 })
 
 describe('post tests', () => {
+
+  beforeAll(async () => {
+    await Blog.remove({})
+    for (let blog of initialBlogs) {
+      let blogObject = new Blog(blog)
+      await blogObject.save()
+    }
+  })
+
   test('POST /api/blogs succeeds with valid data', async () => {
-    const blogsAtStart = await blogsInDb()
+    const blogsAtStart = await helper.blogsInDb()
 
     const newBlog = {
       title: 'Type wars',
@@ -82,7 +77,7 @@ describe('post tests', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const blogsAfterOperation = await blogsInDb()
+    const blogsAfterOperation = await helper.blogsInDb()
 
     expect(blogsAfterOperation.length).toBe(blogsAtStart.length + 1)
 
@@ -91,7 +86,7 @@ describe('post tests', () => {
   })
 
   test('POST /api/blogs likes to zero', async () => {
-    const blogsAtStart = await blogsInDb()
+    const blogsAtStart = await helper.blogsInDb()
 
     const newBlog = {
       title: 'Test Zero',
@@ -105,7 +100,7 @@ describe('post tests', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const blogsAfterOperation = await blogsInDb()
+    const blogsAfterOperation = await helper.blogsInDb()
 
     expect(blogsAfterOperation.length).toBe(blogsAtStart.length + 1)
     const result = blogsAfterOperation.find(a => a.title === 'Test Zero')
@@ -114,7 +109,7 @@ describe('post tests', () => {
   })
 
   test('POST /api/blogs succeeds missing title and url', async () => {
-    const blogsAtStart = await blogsInDb()
+    const blogsAtStart = await helper.blogsInDb()
 
     const newBlog = {
       author: 'Robert C. Martin',
@@ -127,7 +122,7 @@ describe('post tests', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
-    const blogsAfterOperation = await blogsInDb()
+    const blogsAfterOperation = await helper.blogsInDb()
 
     expect(blogsAfterOperation.length).toBe(blogsAtStart.length)
 
