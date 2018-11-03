@@ -5,9 +5,9 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const mongoose = require('mongoose')
 
-if ( process.env.NODE_ENV !== 'production' ) {
-    require('dotenv').config()
-  }
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 const Blog = mongoose.model('Blog', {
   title: String,
