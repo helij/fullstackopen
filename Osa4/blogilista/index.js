@@ -1,8 +1,19 @@
 
-const app = require('./controllers/bloglist')
+const http = require('http')
+const express = require('express')
+const app = express()
+const server = http.createServer(app)
 const config = require('./utils/config')
+const mongoose = require('mongoose')
 
-const PORT = config.port
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+server.listen(config.port, () => {
+  console.log(`Server running on port ${config.port}`)
 })
+
+server.on('close', () => {
+  mongoose.connection.close()
+})
+
+module.exports = {
+  app, server
+}

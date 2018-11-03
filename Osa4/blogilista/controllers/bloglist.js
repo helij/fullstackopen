@@ -1,8 +1,12 @@
+const http = require('http')
 const Blog = require('../models/blog')
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
+//const server = http.createServer(app)
+//const mongoose = require('mongoose')
+//const config = require('../utils/config')
 
 
 app.use(cors())
@@ -27,4 +31,6 @@ app.post('/api/blogs', (request, response) => {
     })
 })
 
-module.exports = app
+module.exports = {
+  app
+}
