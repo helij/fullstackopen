@@ -113,6 +113,26 @@ describe('post tests', () => {
     expect(result.likes).toBe(0)
   })
 
+  test('POST /api/blogs succeeds missing title and url', async () => {
+    const blogsAtStart = await blogsInDb()
+
+    const newBlog = {
+      author: 'Robert C. Martin',
+      likes: 2
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAfterOperation = await blogsInDb()
+
+    expect(blogsAfterOperation.length).toBe(blogsAtStart.length)
+
+  })
+
   afterAll(() => {
     server.close()
   })
