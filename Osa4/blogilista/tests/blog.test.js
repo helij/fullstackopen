@@ -75,6 +75,7 @@ describe('most likes', () => {
 
   test('most likes', () => {
     const result = listHelper.mostLikes(initialBlogs)
+    console.log(result)
     expect(result).toEqual(expected)
   })
 
@@ -113,7 +114,7 @@ describe('when there is initially one user at db', async () => {
     const usersBeforeOperation = await usersInDb()
 
     const newUser = {
-      username: 'mluukkai',
+      username: 'testi',
       name: 'Matti Luukkainen',
       password: 'sa',
       adult: true
@@ -124,6 +125,7 @@ describe('when there is initially one user at db', async () => {
       .send(newUser)
       .expect(400)
       .expect('Content-Type', /application\/json/)
+      .expect('{"error":"password lenght has to be bigger than three"}')
 
     const usersAfterOperation = await usersInDb()
     expect(usersAfterOperation.length).toBe(usersBeforeOperation.length)

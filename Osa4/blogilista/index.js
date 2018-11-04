@@ -14,6 +14,7 @@ app.use(cors())
 app.use(bodyParser.json())
 
 mongoose.Promise = global.Promise
+mongoose.connect(config.mongoUrl)
 
 app.use(express.static('build'))
 
