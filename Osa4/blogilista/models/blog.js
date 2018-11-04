@@ -1,19 +1,21 @@
 const mongoose = require('mongoose')
 
 const blogSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
+  id: String,
   likes: Number,
+  author: String,
+  title: String,
+  url: String,
   user: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 })
 
 blogSchema.statics.format = (blog) => {
   return {
-    title: blog.title,
-    author: blog.author,
-    url: blog.url,
+    _id: blog._id,
     likes: blog.likes,
+    author: blog.author,
+    title: blog.title,
+    url: blog.url,
     user: blog.user
   }
 }

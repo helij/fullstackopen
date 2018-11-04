@@ -13,7 +13,7 @@ const getTokenFrom = (request) => {
 
 blogsRouter.get('/', async (request, response) => {
 
-  const blogs = await Blog.find({}).populate('user')
+  const blogs = await Blog.find({}).populate('user', { id: 1, username: 1, name: 1  })
   response.json(blogs.map(Blog.format))
 
 })
@@ -47,6 +47,10 @@ blogsRouter.post('/', async (request, response) => {
     })
 
     const savedBlog = await blog.save()
+
+    user.blogs = user.blogs.concat(savedBlog._id)
+    await user.save()
+
     response.status(201).json(Blog.format(savedBlog))
   } catch (exception) {
     console.log(exception)
