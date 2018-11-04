@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', async (request, response) => {
 
-  const blogs = await Blog.find({}).populate('user', { id: 1, username: 1, name: 1  })
+  const blogs = await Blog.find({}).populate('user', { id: 1, username: 1, name: 1 })
   response.json(blogs.map(Blog.format))
 
 })
@@ -23,7 +23,7 @@ blogsRouter.post('/', async (request, response) => {
     }
 
 
-    if (body.title === undefined &&  body.url === undefined) {
+    if (body.title === undefined && body.url === undefined) {
       return response.status(400).json({ error: 'parameters missing' })
     }
 
@@ -51,12 +51,30 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
   try {
-    await Blog.findByIdAndRemove(request.params.id)
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
 
-    response.status(204).end()
-  } catch (exception) {
+    const blog = await Blog.findById(request.params.id)
+
+    if (blog) {
+      if (blog.user.toString() === decodedToken.id.toString()) {
+        await Blog.findByIdAndRemove(request.params.id)
+        response.status(204).end()
+      }
+      else {
+        return response.status(401).json({ error: 'user is not the owner of the blog' })
+      }
+    } else {
+      return response.status(404).json({ error: 'blog has already been removed' })
+    }
+  }
+  catch (exception) {
     console.log(exception)
-    response.status(400).send({ error: 'malformatted id' })
+    if (exception.name === 'JsonWebTokenError') {
+      response.status(401).json({ error: exception.message })
+    }
+    else {
+      response.status(500).send({ error: 'something went wrong...' })
+    }
   }
 })
 
@@ -74,7 +92,7 @@ blogsRouter.put('/:id', async (request, response) => {
 
     const savedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
     response.json(savedBlog)
-  } catch(exception) {
+  } catch (exception) {
     console.log(exception)
     response.status(400).send({ error: 'malformatted id' })
   }
