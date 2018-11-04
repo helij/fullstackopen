@@ -75,13 +75,12 @@ describe('most likes', () => {
 
   test('most likes', () => {
     const result = listHelper.mostLikes(initialBlogs)
-    console.log(result)
     expect(result).toEqual(expected)
   })
 
 })
 
-describe('when there is initially one user at db', async () => {
+describe('users test', async () => {
   beforeAll(async () => {
     await User.remove({})
     const user = new User({ username: 'root', password: 'sekret' })
@@ -126,6 +125,27 @@ describe('when there is initially one user at db', async () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
       .expect('{"error":"password lenght has to be bigger than three"}')
+
+    const usersAfterOperation = await usersInDb()
+    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length)
+  })
+
+  test('POST /api/users user already exists', async () => {
+    const usersBeforeOperation = await usersInDb()
+
+    const newUser = {
+      username: 'root',
+      name: 'Matti Luukkainen',
+      password: 'salasana',
+      adult: true
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+      .expect('{"error":"username must be unique"}')
 
     const usersAfterOperation = await usersInDb()
     expect(usersAfterOperation.length).toBe(usersBeforeOperation.length)
