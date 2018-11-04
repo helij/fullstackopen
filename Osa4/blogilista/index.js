@@ -10,11 +10,12 @@ const cors = require('cors')
 const blogsRouter = require('./controllers/blog')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
-
+const middleware = require('./middleware.js')
 
 app.use(cors())
 app.use(bodyParser.json())
 
+app.use(middleware.tokenExtractor)
 mongoose.Promise = global.Promise
 mongoose.connect(config.mongoUrl)
 
