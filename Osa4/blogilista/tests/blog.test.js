@@ -1,4 +1,10 @@
 const listHelper = require('../utils/list_helper')
+const User = require('../models/user')
+const {  blogsInDb, usersInDb, initialBlogs } = require('./test_helper')
+const supertest = require('supertest')
+const Blog = require('../models/blog')
+const { app, server } = require('../index')
+const api = supertest(app)
 
 test('dummy is called', () => {
   const blogs = []
@@ -8,64 +14,10 @@ test('dummy is called', () => {
 
 describe('total likes', () => {
   const listWithOneBlog = [
-    {
-      _id: '5a422aa71b54a676234d17f8',
-      title: 'Go To Statement Considered Harmful',
+    { title: 'Go To Statement Considered Harmful',
       author: 'Edsger W. Dijkstra',
       url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-      likes: 5,
-      __v: 0
-    }
-  ]
-
-  const blogs = [
-    {
-      _id: '5a422a851b54a676234d17f7',
-      title: 'React patterns',
-      author: 'Michael Chan',
-      url: 'https://reactpatterns.com/',
-      likes: 7,
-      __v: 0
-    },
-    {
-      _id: '5a422aa71b54a676234d17f8',
-      title: 'Go To Statement Considered Harmful',
-      author: 'Edsger W. Dijkstra',
-      url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-      likes: 5,
-      __v: 0
-    },
-    {
-      _id: '5a422b3a1b54a676234d17f9',
-      title: 'Canonical string reduction',
-      author: 'Edsger W. Dijkstra',
-      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
-      likes: 12,
-      __v: 0
-    },
-    {
-      _id: '5a422b891b54a676234d17fa',
-      title: 'First class tests',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
-      likes: 10,
-      __v: 0
-    },
-    {
-      _id: '5a422ba71b54a676234d17fb',
-      title: 'TDD harms architecture',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-      likes: 0,
-      __v: 0
-    },
-    {
-      _id: '5a422bc61b54a676234d17fc',
-      title: 'Type wars',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
-      likes: 2,
-      __v: 0
+      likes: 5
     }
   ]
 
@@ -75,65 +27,22 @@ describe('total likes', () => {
   })
 
   test('when list has more blogs equals the likes of that', () => {
-    const result = listHelper.totalLikes(blogs)
+    const result = listHelper.totalLikes(initialBlogs)
     expect(result).toBe(36)
   })
 })
 
 describe('favorite blog', () => {
   const favoriteBlog =
-    { _id: '5a422b3a1b54a676234d17f9',
-      title: 'Canonical string reduction',
+    { title: 'Canonical string reduction',
       author: 'Edsger W. Dijkstra',
       url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
-      likes: 12,
-      __v: 0
+      likes: 12
     }
 
-  const blogs = [
-    {
-      _id: '5a422a851b54a676234d17f7',
-      title: 'React patterns',
-      author: 'Michael Chan',
-      url: 'https://reactpatterns.com/',
-      likes: 7,
-      __v: 0
-    },
-    { _id: '5a422b3a1b54a676234d17f9',
-      title: 'Canonical string reduction',
-      author: 'Edsger W. Dijkstra',
-      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
-      likes: 12,
-      __v: 0
-    },
-    {
-      _id: '5a422b891b54a676234d17fa',
-      title: 'First class tests',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
-      likes: 10,
-      __v: 0
-    },
-    {
-      _id: '5a422ba71b54a676234d17fb',
-      title: 'TDD harms architecture',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-      likes: 0,
-      __v: 0
-    },
-    {
-      _id: '5a422bc61b54a676234d17fc',
-      title: 'Type wars',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
-      likes: 2,
-      __v: 0
-    }
-  ]
 
   test('the favorite blog', () => {
-    const result = listHelper.favoriteBlog(blogs)
+    const result = listHelper.favoriteBlog(initialBlogs)
     expect(result).toEqual(favoriteBlog)
   })
 })
@@ -147,59 +56,8 @@ describe('most blogs', () => {
     }
 
 
-  const blogs = [
-    {
-      _id: '5a422a851b54a676234d17f7',
-      title: 'React patterns',
-      author: 'Michael Chan',
-      url: 'https://reactpatterns.com/',
-      likes: 7,
-      __v: 0
-    },
-    {
-      _id: '5a422aa71b54a676234d17f8',
-      title: 'Go To Statement Considered Harmful',
-      author: 'Edsger W. Dijkstra',
-      url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-      likes: 5,
-      __v: 0
-    },
-    {
-      _id: '5a422b3a1b54a676234d17f9',
-      title: 'Canonical string reduction',
-      author: 'Edsger W. Dijkstra',
-      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
-      likes: 12,
-      __v: 0
-    },
-    {
-      _id: '5a422b891b54a676234d17fa',
-      title: 'First class tests',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
-      likes: 10,
-      __v: 0
-    },
-    {
-      _id: '5a422ba71b54a676234d17fb',
-      title: 'TDD harms architecture',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-      likes: 0,
-      __v: 0
-    },
-    {
-      _id: '5a422bc61b54a676234d17fc',
-      title: 'Type wars',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
-      likes: 2,
-      __v: 0
-    }
-  ]
-
   test('most blogs', () => {
-    const result = listHelper.mostBlogs(blogs)
+    const result = listHelper.mostBlogs(initialBlogs)
     expect(result).toEqual(expected)
   })
 
@@ -215,61 +73,130 @@ describe('most likes', () => {
     }
 
 
-  const blogs = [
-    {
-      _id: '5a422a851b54a676234d17f7',
-      title: 'React patterns',
-      author: 'Michael Chan',
-      url: 'https://reactpatterns.com/',
-      likes: 7,
-      __v: 0
-    },
-    {
-      _id: '5a422aa71b54a676234d17f8',
-      title: 'Go To Statement Considered Harmful',
-      author: 'Edsger W. Dijkstra',
-      url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-      likes: 5,
-      __v: 0
-    },
-    {
-      _id: '5a422b3a1b54a676234d17f9',
-      title: 'Canonical string reduction',
-      author: 'Edsger W. Dijkstra',
-      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
-      likes: 12,
-      __v: 0
-    },
-    {
-      _id: '5a422b891b54a676234d17fa',
-      title: 'First class tests',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
-      likes: 10,
-      __v: 0
-    },
-    {
-      _id: '5a422ba71b54a676234d17fb',
-      title: 'TDD harms architecture',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-      likes: 0,
-      __v: 0
-    },
-    {
-      _id: '5a422bc61b54a676234d17fc',
-      title: 'Type wars',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
-      likes: 2,
-      __v: 0
-    }
-  ]
-
   test('most likes', () => {
-    const result = listHelper.mostLikes(blogs)
+    const result = listHelper.mostLikes(initialBlogs)
     console.log(result)
     expect(result).toEqual(expected)
   })
 
+})
+
+describe('when there is initially one user at db', async () => {
+  beforeAll(async () => {
+    await User.remove({})
+    const user = new User({ username: 'root', password: 'sekret' })
+    await user.save()
+  })
+
+  test('POST /api/users succeeds with a fresh username', async () => {
+    const usersBeforeOperation = await usersInDb()
+
+    const newUser = {
+      username: 'mluukkai',
+      name: 'Matti Luukkainen',
+      password: 'salainen',
+      adult: true
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAfterOperation = await usersInDb()
+    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length+1)
+    const usernames = usersAfterOperation.map(u => u.username)
+    expect(usernames).toContain(newUser.username)
+  })
+})
+
+
+test('blogs are returned as json', async () => {
+  await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+})
+
+describe('post tests', () => {
+
+  beforeAll(async () => {
+    await Blog.remove({})
+    for (let blog of initialBlogs) {
+      let blogObject = new Blog(blog)
+      await blogObject.save()
+    }
+  })
+
+  test('POST /api/blogs succeeds with valid data', async () => {
+    const blogsAtStart = await blogsInDb()
+
+    const newBlog = {
+      title: 'Type wars',
+      author: 'Robert C. Martin',
+      url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+      likes: 2
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAfterOperation = await blogsInDb()
+
+    expect(blogsAfterOperation.length).toBe(blogsAtStart.length + 1)
+
+    const title = blogsAfterOperation.map(r => r.title)
+    expect(title).toContain('Type wars')
+  })
+
+  test('POST /api/blogs likes to zero', async () => {
+    const blogsAtStart = await blogsInDb()
+
+    const newBlog = {
+      title: 'Test Zero',
+      author: 'Robert C. Martin',
+      url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html'
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAfterOperation = await blogsInDb()
+
+    expect(blogsAfterOperation.length).toBe(blogsAtStart.length + 1)
+    const result = blogsAfterOperation.find(a => a.title === 'Test Zero')
+
+    expect(result.likes).toBe(0)
+  })
+
+  test('POST /api/blogs succeeds missing title and url', async () => {
+    const blogsAtStart = await blogsInDb()
+
+    const newBlog = {
+      author: 'Robert C. Martin',
+      likes: 2
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAfterOperation = await blogsInDb()
+
+    expect(blogsAfterOperation.length).toBe(blogsAtStart.length)
+
+  })
+
+  afterAll(() => {
+    server.close()
+  })
 })
