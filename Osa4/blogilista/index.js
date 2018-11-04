@@ -9,6 +9,8 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const blogsRouter = require('./controllers/blog')
 const usersRouter = require('./controllers/users')
+const loginRouter = require('./controllers/login')
+
 
 app.use(cors())
 app.use(bodyParser.json())
@@ -20,6 +22,7 @@ app.use(express.static('build'))
 
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
 
 
 server.listen(config.port, () => {

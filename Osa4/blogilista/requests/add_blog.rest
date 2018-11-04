@@ -1,9 +1,11 @@
 POST http://localhost:3001/api/blogs/
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI1YmRlODU2YmVkN2E1ZDI2YzRiYWI0ZmQiLCJpYXQiOjE1NDEzMTI3MzV9.K2oca_7qhbcg8c4X6yKoBJVQKL_ZmrMT2_jkhv2HPJs
 
 {
-    "title": "Uusi 100",
+    "title": "Token",
     "author": "Keijo 3",
     "url": "http://test.com",
-    "likes": 9
+    "likes": 9,
+    "userId": "5bde856bed7a5d26c4bab4fc"
 }

@@ -1,30 +1,53 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+
+const getTokenFrom = (request) => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7)
+  }
+  return null
+}
 
 blogsRouter.get('/', async (request, response) => {
 
   const blogs = await Blog.find({})
-  response.json(blogs)
+  response.json(blogs.map(Blog.format))
 
 })
 
 blogsRouter.post('/', async (request, response) => {
+
+  const body = request.body
+
+
   try {
-    const body = request.body
+    const token = getTokenFrom(request)
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+
+    if (!token || !decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
 
     if (body.title === undefined &&  body.url === undefined) {
       return response.status(400).json({ error: 'parameters missing' })
     }
+
+    const user = await User.findById(body.userId)
 
     const blog = new Blog({
       title: body.title,
       author: body.author,
       url: body.url,
       likes: body.likes === undefined ? 0 : body.likes,
+      user: user._id
     })
 
     const savedBlog = await blog.save()
-    response.status(201).json(savedBlog)
+    response.status(201).json(Blog.format(savedBlog))
   } catch (exception) {
     console.log(exception)
     response.status(500).json({ error: 'something went wrong...' })
