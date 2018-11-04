@@ -109,6 +109,27 @@ describe('when there is initially one user at db', async () => {
     const usernames = usersAfterOperation.map(u => u.username)
     expect(usernames).toContain(newUser.username)
   })
+
+  test('POST /api/users short password', async () => {
+    const usersBeforeOperation = await usersInDb()
+
+    const newUser = {
+      username: 'testi',
+      name: 'Matti Luukkainen',
+      password: 'sa',
+      adult: true
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+      .expect('{"error":"password lenght has to be bigger than three"}')
+
+    const usersAfterOperation = await usersInDb()
+    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length)
+  })
 })
 
 
