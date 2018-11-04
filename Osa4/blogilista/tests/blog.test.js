@@ -75,7 +75,6 @@ describe('most likes', () => {
 
   test('most likes', () => {
     const result = listHelper.mostLikes(initialBlogs)
-    console.log(result)
     expect(result).toEqual(expected)
   })
 
@@ -108,6 +107,26 @@ describe('when there is initially one user at db', async () => {
     expect(usersAfterOperation.length).toBe(usersBeforeOperation.length+1)
     const usernames = usersAfterOperation.map(u => u.username)
     expect(usernames).toContain(newUser.username)
+  })
+
+  test('POST /api/users short password', async () => {
+    const usersBeforeOperation = await usersInDb()
+
+    const newUser = {
+      username: 'mluukkai',
+      name: 'Matti Luukkainen',
+      password: 'sa',
+      adult: true
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAfterOperation = await usersInDb()
+    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length)
   })
 })
 
