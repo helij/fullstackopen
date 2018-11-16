@@ -4,6 +4,7 @@ import CreateBlog from './components/CreateBlog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 
 class App extends React.Component {
   constructor(props) {
@@ -20,7 +21,7 @@ class App extends React.Component {
     }
 
     this.handleNoticationChange = this.handleNoticationChange.bind(this);
-    this.componentDidMount = this.componentDidMount.bind(this);
+    this.updateBlogs = this.updateBlogs.bind(this);
   }
 
   componentDidMount() {
@@ -65,6 +66,12 @@ class App extends React.Component {
     setTimeout(() => {
       this.setState({ notificationMessage: null })
     }, 5000)
+  }
+
+  updateBlogs () {
+    blogService.getAll().then(blogs =>
+      this.setState({ blogs })
+    )
   }
 
 
@@ -124,7 +131,9 @@ class App extends React.Component {
           <div>
             <h2>blogs</h2>
             <p>{this.state.user.name} logged in {logoutButton()}</p>
-            <CreateBlog notification={this.handleNoticationChange} update={this.componentDidMount}/><br />
+            <Togglable buttonLabel="create new blog">
+            <CreateBlog notification={this.handleNoticationChange} update={this.updateBlogs}/><br />
+            </Togglable>
             {blogForm()}
           </div>
         }
