@@ -118,7 +118,7 @@ class App extends React.Component {
       <div>
         {this.state.blogs.map(blog =>
         <TogglableLink key={blog._id} buttonLabel={blog.title +" "+ blog.author} >
-          <Blog key={blog._id} blog={blog} update={this.updateBlogs}/>
+          <Blog key={blog._id} blog={blog} update={this.updateBlogs} username={JSON.parse(window.localStorage.getItem('loggedBlogappUser')).username}/>
         </TogglableLink>
         )}
       </div>

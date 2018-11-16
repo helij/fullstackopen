@@ -1,17 +1,22 @@
 import React from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, update }) => (
+const Blog = ({ blog, update, username }) => (
 
   <div>
+
     <p><a href={blog.url}>{blog.url}</a></p>
     <p>{blog.likes} likes <button onClick={(e) => updateBlog(e, blog, update)}>like</button></p>
 
     {blog.user.map(item => <p key={item._id}> added by {item.username}</p>)}
-    <p><button className='blueButton' onClick={(e) => deleteBlog(e, blog, update)}>delete</button></p>
+
+      {blog.user === null || blog.user.length === 0 || blog.user.find(x => x.username === username)  ? (
+        <p><button className='blueButton' onClick={(e) => deleteBlog(e, blog, update)}>delete</button></p>
+      ) : (
+        <p></p>
+      )}
+
   </div>
-
-
 
 )
 
@@ -46,7 +51,7 @@ const updateBlog = async (event, blog, update) => {
 const deleteBlog = async (event, blog, update) => {
   event.preventDefault()
   try {
-    if (window.confirm('delete \'' + blog.title  + '\' by ' + blog.author + '?')) {
+    if (window.confirm('delete \'' + blog.title + '\' by ' + blog.author + '?')) {
       await blogService.deleteBlog(blog._id)
       update()
     }
