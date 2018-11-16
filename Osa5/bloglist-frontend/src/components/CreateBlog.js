@@ -7,8 +7,7 @@ class CreateBlog extends React.Component {
     this.state = {
       title: '',
       author: '',
-      url: '',
-      error: ''
+      url: ''
     }
   }
 
@@ -17,29 +16,29 @@ class CreateBlog extends React.Component {
   }
 
   createBlog = async (event) => {
-
+    event.preventDefault()
     try {
       await blogService.create({
         title: this.state.title,
         author: this.state.author,
         url: this.state.url
       })
-
-   
-    } catch (exception) {
-  
-      this.setState({
-        error: 'cannot create a blog',
-      })
+      this.props.notification('a new blog \'' + this.state.title + '\' by ' + this.state.author + ' added', 'created')
+      this.props.update()
     }
+    catch (exception) {
+      this.props.notification('cannot create a blog', 'error')
+      this.props.update()
+    }
+
   }
 
 
   render() {
 
     const createForm = () => (
-
       <div>
+   
         <h3>create new</h3>
 
         <form onSubmit={this.createBlog}>

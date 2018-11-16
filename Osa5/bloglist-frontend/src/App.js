@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import CreateBlog from './components/CreateBlog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
 class App extends React.Component {
   constructor(props) {
@@ -11,11 +12,15 @@ class App extends React.Component {
       blogs: [],
       newBlog: '',
       showAll: true,
-      error: null,
       username: '',
       password: '',
-      user: null
+      user: null,
+      notificationMessage: null,
+      notificationClass: null
     }
+
+    this.handleNoticationChange = this.handleNoticationChange.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
   }
 
   componentDidMount() {
@@ -42,12 +47,7 @@ class App extends React.Component {
       blogService.setToken(user.token)
       this.setState({ username: '', password: '', user })
     } catch (exception) {
-      this.setState({
-        error: 'käyttäjätunnus tai salasana virheellinen',
-      })
-      setTimeout(() => {
-        this.setState({ error: null })
-      }, 5000)
+      this.handleNoticationChange('käyttäjätunnus tai salasana virheellinen', 'error') 
     }
   }
 
@@ -56,6 +56,17 @@ class App extends React.Component {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogappUser')
   }
+
+  handleNoticationChange (message, style) {
+    this.setState({
+      notificationMessage: message,
+      notificationClass: style
+    })
+    setTimeout(() => {
+      this.setState({ notificationMessage: null })
+    }, 5000)
+  }
+
 
   handleLoginFieldChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
@@ -107,13 +118,13 @@ class App extends React.Component {
 
     return (
       <div>
-
+        <Notification message={this.state.notificationMessage} style={this.state.notificationClass} />
         {this.state.user === null ?
           loginForm() :
           <div>
             <h2>blogs</h2>
             <p>{this.state.user.name} logged in {logoutButton()}</p>
-            <CreateBlog /><br />
+            <CreateBlog notification={this.handleNoticationChange} update={this.componentDidMount}/><br />
             {blogForm()}
           </div>
         }
