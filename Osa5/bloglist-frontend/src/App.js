@@ -52,7 +52,7 @@ class App extends React.Component {
   }
 
 
-  logout = async (event) => {
+  logout = (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogappUser')
   }
