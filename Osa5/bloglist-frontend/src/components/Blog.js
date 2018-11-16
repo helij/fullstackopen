@@ -8,6 +8,7 @@ const Blog = ({ blog, update }) => (
     <p>{blog.likes} likes <button onClick={(e) => updateBlog(e, blog, update)}>like</button></p>
 
     {blog.user.map(item => <p key={item._id}> added by {item.username}</p>)}
+    <p><button className='blueButton' onClick={(e) => deleteBlog(e, blog, update)}>delete</button></p>
   </div>
 
 
@@ -34,6 +35,21 @@ const updateBlog = async (event, blog, update) => {
 
     await blogService.update(blog._id, newBlog)
     update()
+  }
+  catch (exception) {
+    console.log('cannot update a blog', exception)
+
+  }
+
+}
+
+const deleteBlog = async (event, blog, update) => {
+  event.preventDefault()
+  try {
+    if (window.confirm('delete \'' + blog.title  + '\' by ' + blog.author + '?')) {
+      await blogService.deleteBlog(blog._id)
+      update()
+    }
   }
   catch (exception) {
     console.log('cannot update a blog', exception)
