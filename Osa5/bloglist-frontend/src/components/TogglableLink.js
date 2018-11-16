@@ -1,5 +1,5 @@
 import React from 'react'
-class Togglable extends React.Component {
+class TogglableLink extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -17,16 +17,16 @@ class Togglable extends React.Component {
 
     return (
       <div>
-        <div style={hideWhenVisible}>
-          <p><button onClick={this.toggleVisibility}>{this.props.buttonLabel}</button></p>
+        <div style={hideWhenVisible} className='blogStyle' >
+          <button className= 'ownButton' onClick={this.toggleVisibility}>{this.props.buttonLabel}</button>
         </div>
-        <div style={showWhenVisible}>
+        <div style={showWhenVisible} className='blogStyle'>
+        <button className= 'ownButton' onClick={this.toggleVisibility}>{this.props.buttonLabel}</button>
           {this.props.children}
-          <p><button onClick={this.toggleVisibility}>hide</button></p>
         </div>
       </div>
     )
   }
 }
 
-export default Togglable
+export default TogglableLink

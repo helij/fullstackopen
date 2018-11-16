@@ -5,6 +5,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import TogglableLink from './components/TogglableLink'
 
 class App extends React.Component {
   constructor(props) {
@@ -115,9 +116,12 @@ class App extends React.Component {
 
 
     const blogForm = () => (
+      
       <div>
         {this.state.blogs.map(blog =>
+        <TogglableLink key={blog._id} buttonLabel={blog.title +" "+ blog.author} >
           <Blog key={blog._id} blog={blog} />
+          </TogglableLink>
         )}
       </div>
     )
