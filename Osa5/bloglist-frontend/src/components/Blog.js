@@ -1,11 +1,11 @@
 import React from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => (
+const Blog = ({ blog, update }) => (
 
   <div>
     <p><a href={blog.url}>{blog.url}</a></p>
-    <p>{blog.likes} likes <button onClick={(e) => updateBlog(e, blog)}>like</button></p>
+    <p>{blog.likes} likes <button onClick={(e) => updateBlog(e, blog, update)}>like</button></p>
 
     {blog.user.map(item => <p key={item._id}> added by {item.username}</p>)}
   </div>
@@ -14,7 +14,7 @@ const Blog = ({ blog }) => (
 
 )
 
-const updateBlog = async (event, blog) => {
+const updateBlog = async (event, blog, update) => {
   event.preventDefault()
   try {
 
@@ -33,7 +33,7 @@ const updateBlog = async (event, blog) => {
     }
 
     await blogService.update(blog._id, newBlog)
-  
+    update()
   }
   catch (exception) {
     console.log('cannot update a blog', exception)

@@ -26,9 +26,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    blogService.getAll().then(blogs =>
-      this.setState({ blogs })
-    )
+    this.updateBlogs()
 
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
@@ -71,7 +69,7 @@ class App extends React.Component {
 
   updateBlogs () {
     blogService.getAll().then(blogs =>
-      this.setState({ blogs })
+      this.setState({ blogs: blogs.sort((a,b) => (a.likes > b.likes) ? 1 : ((b.likes > a.likes) ? -1 : 0)) })
     )
   }
 
@@ -120,8 +118,8 @@ class App extends React.Component {
       <div>
         {this.state.blogs.map(blog =>
         <TogglableLink key={blog._id} buttonLabel={blog.title +" "+ blog.author} >
-          <Blog key={blog._id} blog={blog} />
-          </TogglableLink>
+          <Blog key={blog._id} blog={blog} update={this.updateBlogs}/>
+        </TogglableLink>
         )}
       </div>
     )
