@@ -1,5 +1,6 @@
 import React from 'react'
 import Blog from './components/Blog'
+import CreateBlog from './components/CreateBlog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -25,22 +26,22 @@ class App extends React.Component {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      this.setState({user})
+      this.setState({ user })
       blogService.setToken(user.token)
     }
-  } 
+  }
 
   login = async (event) => {
     event.preventDefault()
-    try{
+    try {
       const user = await loginService.login({
         username: this.state.username,
         password: this.state.password
       })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      this.setState({ username: '', password: '', user})
-    } catch(exception) {
+      this.setState({ username: '', password: '', user })
+    } catch (exception) {
       this.setState({
         error: 'käyttäjätunnus tai salasana virheellinen',
       })
@@ -97,13 +98,13 @@ class App extends React.Component {
 
     const blogForm = () => (
       <div>
-        {this.state.blogs.map(blog => 
-          <Blog key={blog._id} blog={blog}/>
+        {this.state.blogs.map(blog =>
+          <Blog key={blog._id} blog={blog} />
         )}
       </div>
     )
 
-    
+
     return (
       <div>
 
@@ -112,6 +113,7 @@ class App extends React.Component {
           <div>
             <h2>blogs</h2>
             <p>{this.state.user.name} logged in {logoutButton()}</p>
+            <CreateBlog /><br />
             {blogForm()}
           </div>
         }
