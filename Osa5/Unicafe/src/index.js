@@ -46,7 +46,6 @@ const Statistiikka = () => {
           </tr>
         </tbody>
       </table>
-
        <button onClick={e => store.dispatch({ type: 'ZERO'})}>nollaa tilasto</button>
     </div >
   )
