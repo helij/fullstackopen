@@ -1,4 +1,4 @@
-const notificationReducer = (state = 'testi notifikaatio', action) => {
+const notificationReducer = (state = '', action) => {
   console.log('ACTION: ', action)
   switch (action.type) {
   case 'SET_NOTIFICATION':
@@ -8,7 +8,7 @@ const notificationReducer = (state = 'testi notifikaatio', action) => {
   }
 }
 
-export const notificationChange = (notification) => {
+export const notificationCreation = (notification) => {
   return {
     type: 'SET_NOTIFICATION',
     notification

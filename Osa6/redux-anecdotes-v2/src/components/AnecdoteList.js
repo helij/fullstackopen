@@ -1,7 +1,19 @@
 import React from 'react'
 import { anecdoteVote } from './../reducers/anecdoteReducer'
+import { notificationCreation } from './../reducers/notificationReducer'
 
 class AnecdoteList extends React.Component {
+
+
+  handleVote = (e, anecdote) => {
+    e.preventDefault()
+    this.props.store.dispatch(anecdoteVote(anecdote.id))
+    this.props.store.dispatch(notificationCreation('You voted anecdote: ' + anecdote.content))
+    setTimeout(() => {
+      this.props.store.dispatch(notificationCreation(''))
+    }, 5000)
+  }
+
   render() {
     console.log(this.props.store.getState())
     const anecdotes = this.props.store.getState().anecdotes
@@ -15,9 +27,7 @@ class AnecdoteList extends React.Component {
             </div>
             <div>
               has {anecdote.votes}
-              <button onClick={() =>
-                this.props.store.dispatch(anecdoteVote(anecdote.id))
-              }>
+              <button onClick={e => this.handleVote(e, anecdote)}>
                 vote
               </button>
             </div>
