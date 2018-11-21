@@ -1,5 +1,3 @@
-const getId = () => (100000 * Math.random()).toFixed(0)
-
 const reducer = (store = [], action) => {
   if (action.type === 'VOTE') {
     const old = store.filter(a => a.id !== action.data.id)
@@ -9,7 +7,7 @@ const reducer = (store = [], action) => {
   }
   if (action.type === 'CREATE') {
 
-    return [...store, { content: action.data.content, id: getId(), votes: 0 }]
+    return [...store, { content: action.data.content, id: action.data.id, votes: 0 }]
   }
 
   if (action.type === 'INIT_ANECDOTES') {
@@ -20,10 +18,10 @@ const reducer = (store = [], action) => {
   return store
 }
 
-export const anecdoteCreation = (content) => {
+export const anecdoteCreation = (data) => {
   return {
     type: 'CREATE',
-    data: content
+    data
   }
 }
 
