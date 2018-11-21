@@ -49,9 +49,9 @@ const mapStateToProps = (state) => {
   }
 }
 
-const ConnectedAnecdoteListr = connect(
+const ConnectedAnecdoteList = connect(
   mapStateToProps,
   { anecdoteVote, notificationCreation }
 )(AnecdoteList)
 
-export default ConnectedAnecdoteListr
+export default ConnectedAnecdoteList
