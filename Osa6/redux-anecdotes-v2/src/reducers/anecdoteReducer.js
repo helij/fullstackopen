@@ -21,14 +21,9 @@ const reducer = (store = [], action) => {
 }
 
 export const anecdoteCreation = (content) => {
-  console.log('Content', content)
   return {
     type: 'CREATE',
-    data: {
-      content,
-      id: getId(),
-      votes: 0
-    }
+    data: content
   }
 }
 
