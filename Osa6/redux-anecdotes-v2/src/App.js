@@ -1,4 +1,5 @@
 import React from 'react'
+import Filter from './components/Filter'
 import Notification from './components/Notification'
 import AnecdoteForm from './components/AnecdoteForm'
 import AnecdoteList from './components/AnecdoteList'
@@ -10,6 +11,7 @@ class App extends React.Component {
     return (
       <div>
         <h1>Programming anecdotes</h1>
+        <Filter store={this.props.store} />
         {this.props.store.getState().notification.length > 0 &&
           <Notification store={this.props.store} />
         }

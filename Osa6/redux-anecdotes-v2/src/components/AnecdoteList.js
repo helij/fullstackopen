@@ -20,7 +20,7 @@ class AnecdoteList extends React.Component {
     return (
       <div>
         <h2>Anecdotes</h2>
-        {anecdotes.sort((a, b) => b.votes - a.votes).map(anecdote =>
+        {anecdotes.sort((a, b) => b.votes - a.votes).filter(anecdote => anecdote.content.toUpperCase().includes(this.props.store.getState().filter.toUpperCase())).map(anecdote =>
           <div key={anecdote.id}>
             <div>
               {anecdote.content}
