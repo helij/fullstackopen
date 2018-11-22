@@ -75,7 +75,7 @@ class CreateNew extends React.Component {
       votes: 0
     })
     this.props.history.push('/')
-    this.props.showNotification('a new anecdote ' +this.state.content + ' created')
+    this.props.showNotification('a new anecdote ' + this.state.content + ' created')
   }
 
   render() {
@@ -99,8 +99,16 @@ class CreateNew extends React.Component {
         </form>
       </div>
     )
-  
+
   }
+}
+
+const notificationStyle = {
+  color: 'green',
+  border: '1px solid green',
+  fontSize: 16,
+  borderRadius: 10,
+  padding: 10
 }
 
 class App extends React.Component {
@@ -150,12 +158,11 @@ class App extends React.Component {
   }
 
   showNotification = (text) => {
-    this.setState({ notification:text })
+    this.setState({ notification: text })
     setTimeout(() => {
-      this.setState({ notification:''})
+      this.setState({ notification: '' })
     }, 10000)
   }
-
 
   render() {
     return (
@@ -163,9 +170,13 @@ class App extends React.Component {
         <div>
           <Menu />
           <h1>Software anecdotes</h1>
-          {this.state.notification}
+          {this.state.notification.length > 0 &&
+          <div style={notificationStyle}>
+            {this.state.notification}
+          </div>
+          }
           <Route exact path="/" render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
-          <Route path="/create" render={({history}) => <CreateNew history={history} addNew={this.addNew} showNotification={this.showNotification} /> } />
+          <Route path="/create" render={({ history }) => <CreateNew history={history} addNew={this.addNew} showNotification={this.showNotification} />} />
           <Route path="/about" render={() => <About />} />
           <Route exact path="/anecdotes/:id" render={({ match }) =>
             <Anecdote anecdote={this.anecdoteById(match.params.id)} />} />
