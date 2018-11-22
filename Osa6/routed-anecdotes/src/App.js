@@ -2,26 +2,15 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Link, NavLink } from 'react-router-dom'
 import { Table } from 'semantic-ui-react'
 import { Container } from 'semantic-ui-react'
-import { Grid, Image } from 'semantic-ui-react'
+import { Grid, Image, Form, Button, Menu } from 'semantic-ui-react'
 
-const Menu = () => (
-  <div style={menuStyle}>
-    <NavLink exact to="/" activeStyle={activeStyle}>anecdotes</NavLink> &nbsp;
-    <NavLink exact to="/create" activeStyle={activeStyle}>create new</NavLink> &nbsp;
-    <NavLink exact to="/about" activeStyle={activeStyle}>about</NavLink>
-  </div>
+const MenuNav = () => (
+  <Menu color='blue'> 
+    <Menu.Item as={NavLink} exact to="/" content="anecdotes" />
+    <Menu.Item as={NavLink} to="/create" content="create new" />
+    <Menu.Item as={NavLink} to="/about" content="about" />
+  </Menu>
 )
-
-
-const activeStyle = {
-  fontWeight: "bold",
-  color: "red"
-}
-
-const menuStyle = {
-  backgroundColor: "lightblue",
-  padding: 10
-}
 
 const Anecdote = ({ anecdote }) => {
   return (
@@ -71,10 +60,10 @@ const About = () => (
 
           
 const Footer = () => (
-  <Container>
+  <div style={{paddingTop: 10}} >
     Anecdote app for <a href='https://courses.helsinki.fi/fi/TKT21009/121540749'>Full Stack -sovelluskehitys</a>.
         See <a href='https://github.com/mluukkai/routed-anecdotes'>https://github.com/mluukkai/routed-anecdotes</a> for the source code.
-  </Container>
+  </div>
 )
           
 class CreateNew extends React.Component {
@@ -104,25 +93,31 @@ class CreateNew extends React.Component {
     this.props.showNotification('a new anecdote ' + this.state.content + ' created')
   }
 
+
+
   render() {
     return (
       <div>
         <h2>create a new anecdote</h2>
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            content
-            <input name='content' value={this.state.content} onChange={this.handleChange} />
-          </div>
-          <div>
-            author
-            <input name='author' value={this.state.author} onChange={this.handleChange} />
-          </div>
-          <div>
-            url for more info
-            <input name='info' value={this.state.info} onChange={this.handleChange} />
-          </div>
-          <button>create</button>
-        </form>
+        <Form onSubmit={this.handleSubmit}>
+
+          <Form.Field>
+            <label>Content</label>
+            <input placeholder='Content' name='content' value={this.state.content} onChange={this.handleChange} />
+          </Form.Field>
+
+          <Form.Field>
+            <label>Author</label>
+            <input placeholder='Author' name='author' value={this.state.author} onChange={this.handleChange} />
+          </Form.Field>
+
+          <Form.Field>
+            <label>Url for more info</label>
+            <input placeholder='Url' name='info' value={this.state.info} onChange={this.handleChange} />
+          </Form.Field>
+
+          <Button type='submit'>Create</Button>
+        </Form>
       </div>
     )
 
@@ -130,11 +125,12 @@ class CreateNew extends React.Component {
 }
       
 const notificationStyle = {
-            color: 'green',
+          color: 'green',
           border: '1px solid green',
           fontSize: 16,
           borderRadius: 10,
-          padding: 10
+          padding: 10,
+          margin: 10
         }
         
 class App extends React.Component {
@@ -196,11 +192,12 @@ class App extends React.Component {
         <Router>
           <div >
           <h1>Software anecdotes</h1>
-            <Menu />
+            <MenuNav />
+            
             {this.state.notification.length > 0 &&
               <div style={notificationStyle}>
                 {this.state.notification}
-              </div>
+                </div>
             }
             <Route exact path="/" render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
             <Route path="/create" render={({ history }) => <CreateNew history={history} addNew={this.addNew} showNotification={this.showNotification} />} />
