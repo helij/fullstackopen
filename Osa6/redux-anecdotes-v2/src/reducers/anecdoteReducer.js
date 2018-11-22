@@ -20,8 +20,6 @@ const reducer = (store = [], action) => {
   return store
 }
 
-
-
 export const anecdoteCreation = (content) => {
   return async (dispatch) => {
     const newAnecdote = await anecdoteService.createNew(content)
