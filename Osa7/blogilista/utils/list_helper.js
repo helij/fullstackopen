@@ -2,69 +2,67 @@ const dummy = (blogs) => {
   return 1
 }
 
+const byLikes = (b1, b2) => b2.likes - b1.likes
+
 const totalLikes = (blogs) => {
-  const sum = blogs.reduce((sum, item) => sum + item.likes, 0)
-  return sum
+  const sumReducer = (sum, i) => sum+i
+  return blogs.map(b=>b.likes).reduce(sumReducer, 0)
 }
-
+ 
 const favoriteBlog = (blogs) => {
+  if (blogs.length === 0) {
+    return null
+  }
+  
+  const favorite = blogs.sort(byLikes)[0]
 
-  const max = blogs.reduce(function(prev, current) {
-    return (prev.likes > current.likes) ? prev : current
-  })
-
-  return max
-
+  return {
+    title: favorite.title,
+    author: favorite.author,
+    likes: favorite.likes
+  }
 }
 
 const mostBlogs = (blogs) => {
-  const result = blogs.map(a => a.author)
-  let mf = 1
-  let m = 0
-  let item
-  for (var i=0; i<result.length; i++)
-  {
-    for (var j=i; j<result.length; j++)
-    {
-      if (result[i] === result[j])
-        m++
-      if (mf<m)
-      {
-        mf=m
-        item = result[i]
-      }
-    }
-    m=0
+  if (blogs.length === 0) {
+    return null
   }
-  return{
-    author: item,
-    blogs: mf
+
+  const reducer = (obj, blog) => {
+    obj[blog.author] = ( obj[blog.author] || 0 ) + 1
+    return obj
   }
+
+  const authors = blogs.reduce(reducer, {})
+
+  const blogCounts = Object.keys(authors).map(name => {
+    return { author: name, blogs: authors[name]}
+  })
+
+  const byBlogs = (b1, b2) => b2.blogs - b1.blogs
+
+  return blogCounts.sort(byBlogs)[0]
 }
 
 const mostLikes = (blogs) => {
-  const result = blogs.map(a => a.author)
-  let mostLikes = 0
-  let likes = 0
-  let item
-  for (var i=0; i<result.length; i++)
-  {
-    const array = blogs.filter(item => item.author === result[i])
-    likes = totalLikes(array)
-    if (mostLikes<likes)
-    {
-      mostLikes=likes
-      item = result[i]
-    }
+  if (blogs.length === 0) {
+    return null
+  }
 
-    likes=0
+  const reducer = (obj, blog) => {
+    obj[blog.author] = (obj[blog.author] || 0) + blog.likes
+    return obj
   }
-  return{
-    author: item,
-    likes: mostLikes
-  }
+
+  const authors = blogs.reduce(reducer, {})
+
+  const blogCounts = Object.keys(authors).map(name => {
+    return { author: name, likes: authors[name] }
+  })
+
+  return blogCounts.sort(byLikes)[0]
 }
 
 module.exports = {
-  dummy, totalLikes,favoriteBlog, mostBlogs, mostLikes
+  dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes
 }

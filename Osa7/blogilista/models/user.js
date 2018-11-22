@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
-const Blog = require('../models/blog')
 
 const userSchema = new mongoose.Schema({
-  id: String,
   username: String,
   name: String,
   passwordHash: String,
@@ -15,11 +13,13 @@ userSchema.statics.format = (user) => {
     _id: user._id,
     username: user.username,
     name: user.name,
-    adult: user.adult,
-    blogs: user.blogs.map(Blog.format)
+    blogs: user.blogs,
+    adult: user.adult
   }
 }
 
+// koska käytän samaa kantaa kuin eräässä toisessa sovelluksessa
+// jossa myös Users-kokoelma, talletan tämän sovelluksen 
+// käyttäjät kokoelmaan BlogUsers
 const User = mongoose.model('User', userSchema)
-
 module.exports = User
