@@ -5,6 +5,8 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { notificationCreation } from './reducers/notificationReducer'
+import { connect } from 'react-redux'
 
 class App extends React.Component {
   constructor(props) {
@@ -34,16 +36,7 @@ class App extends React.Component {
   } 
 
   notify = (message, type = 'info') => {
-    this.setState({
-      notification: {
-        message, type
-      }
-    })
-    setTimeout(() => {
-      this.setState({
-        notification: null
-      })     
-    }, 10000)
+    this.props.notificationCreation(message, type, 10)
   }
 
   like = (id) => async () => {
@@ -184,4 +177,15 @@ class App extends React.Component {
   }
 }
 
-export default App
+const mapStateToProps = (state) => {
+  return {
+    notification: state.notification
+  }
+}
+
+const ConnectedApp = connect(
+  mapStateToProps,
+  { notificationCreation }
+)(App)
+
+export default ConnectedApp
