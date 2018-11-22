@@ -1,6 +1,8 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link, NavLink } from 'react-router-dom'
-import { Table } from 'react-bootstrap'
+import { Table } from 'semantic-ui-react'
+import { Container } from 'semantic-ui-react'
+import { Grid, Image } from 'semantic-ui-react'
 
 const Menu = () => (
   <div style={menuStyle}>
@@ -34,36 +36,47 @@ const Anecdote = ({ anecdote }) => {
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
-    <Table striped>
-      <tbody>
-          {anecdotes.map(anecdote => <tr key={anecdote.id}><td><Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link></td></tr>)}
-      </tbody>
+    <Table striped celled>
+      <Table.Body>
+        {anecdotes.map(anecdote => <Table.Row key={anecdote.id}><Table.Cell><Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link></Table.Cell></Table.Row >)}
+      </Table.Body>
     </Table>
   </div>
 )
-
+          
 const About = () => (
-  <div>
-    <h2>About anecdote app</h2>
-    <p>According to Wikipedia:</p>
+  <Container>
+    <Grid columns={2} padded>
+      <Grid.Row>
+        <Grid.Column>
+          <h2>About anecdote app</h2>
+          <Container >
+            <p>According to Wikipedia:</p>
 
-    <em>An anecdote is a brief, revealing account of an individual person or an incident.
-      Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself,
-      such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative.
-      An anecdote is "a story with a point."</em>
+            <em>An anecdote is a brief, revealing account of an individual person or an incident.
+              Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself,
+              such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative.
+              An anecdote is "a story with a point."</em>
 
-    <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
-  </div>
+            <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
+          </Container>
+        </Grid.Column>
+        <Grid.Column >
+          <Image src='http://www.pmg.csail.mit.edu/~liskov/images/LISKOV_crop2.jpg' />
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
+  </Container>
 )
 
+          
 const Footer = () => (
-  <div>
+  <Container>
     Anecdote app for <a href='https://courses.helsinki.fi/fi/TKT21009/121540749'>Full Stack -sovelluskehitys</a>.
-
-    See <a href='https://github.com/mluukkai/routed-anecdotes'>https://github.com/mluukkai/routed-anecdotes</a> for the source code.
-  </div>
+        See <a href='https://github.com/mluukkai/routed-anecdotes'>https://github.com/mluukkai/routed-anecdotes</a> for the source code.
+  </Container>
 )
-
+          
 class CreateNew extends React.Component {
   constructor() {
     super()
@@ -115,15 +128,15 @@ class CreateNew extends React.Component {
 
   }
 }
-
+      
 const notificationStyle = {
-  color: 'green',
-  border: '1px solid green',
-  fontSize: 16,
-  borderRadius: 10,
-  padding: 10
-}
-
+            color: 'green',
+          border: '1px solid green',
+          fontSize: 16,
+          borderRadius: 10,
+          padding: 10
+        }
+        
 class App extends React.Component {
   constructor() {
     super()
@@ -179,25 +192,27 @@ class App extends React.Component {
 
   render() {
     return (
-      <Router>
-        <div className="container">
-          <Menu />
+      <Container>
+        <Router>
+          <div >
           <h1>Software anecdotes</h1>
-          {this.state.notification.length > 0 &&
-            <div style={notificationStyle}>
-              {this.state.notification}
-            </div>
-          }
-          <Route exact path="/" render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
-          <Route path="/create" render={({ history }) => <CreateNew history={history} addNew={this.addNew} showNotification={this.showNotification} />} />
-          <Route path="/about" render={() => <About />} />
-          <Route exact path="/anecdotes/:id" render={({ match }) =>
-            <Anecdote anecdote={this.anecdoteById(match.params.id)} />} />
-          <Footer />
-        </div>
-      </Router>
+            <Menu />
+            {this.state.notification.length > 0 &&
+              <div style={notificationStyle}>
+                {this.state.notification}
+              </div>
+            }
+            <Route exact path="/" render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
+            <Route path="/create" render={({ history }) => <CreateNew history={history} addNew={this.addNew} showNotification={this.showNotification} />} />
+            <Route path="/about" render={() => <About />} />
+            <Route exact path="/anecdotes/:id" render={({ match }) =>
+              <Anecdote anecdote={this.anecdoteById(match.params.id)} />} />
+            <Footer />
+          </div>
+        </Router>
+      </Container>
     );
   }
 }
-
-export default App;
+      
+      export default App;
