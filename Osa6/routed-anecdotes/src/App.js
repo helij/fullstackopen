@@ -1,21 +1,22 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link, NavLink } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 
 const Menu = () => (
-  <div style ={menuStyle}>
-    <NavLink exact to="/" activeStyle ={activeStyle}>anecdotes</NavLink> &nbsp;
-    <NavLink exact to="/create" activeStyle ={activeStyle}>create new</NavLink> &nbsp;
-    <NavLink exact to="/about" activeStyle ={activeStyle}>about</NavLink>
+  <div style={menuStyle}>
+    <NavLink exact to="/" activeStyle={activeStyle}>anecdotes</NavLink> &nbsp;
+    <NavLink exact to="/create" activeStyle={activeStyle}>create new</NavLink> &nbsp;
+    <NavLink exact to="/about" activeStyle={activeStyle}>about</NavLink>
   </div>
 )
 
 
-const activeStyle={
+const activeStyle = {
   fontWeight: "bold",
   color: "red"
 }
 
-const menuStyle={
+const menuStyle = {
   backgroundColor: "lightblue",
   padding: 10
 }
@@ -33,9 +34,11 @@ const Anecdote = ({ anecdote }) => {
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
-    <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} ><Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link></li>)}
-    </ul>
+    <Table striped>
+      <tbody>
+          {anecdotes.map(anecdote => <tr key={anecdote.id}><td><Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link></td></tr>)}
+      </tbody>
+    </Table>
   </div>
 )
 
@@ -177,13 +180,13 @@ class App extends React.Component {
   render() {
     return (
       <Router>
-        <div>
+        <div className="container">
           <Menu />
           <h1>Software anecdotes</h1>
           {this.state.notification.length > 0 &&
-          <div style={notificationStyle}>
-            {this.state.notification}
-          </div>
+            <div style={notificationStyle}>
+              {this.state.notification}
+            </div>
           }
           <Route exact path="/" render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
           <Route path="/create" render={({ history }) => <CreateNew history={history} addNew={this.addNew} showNotification={this.showNotification} />} />
