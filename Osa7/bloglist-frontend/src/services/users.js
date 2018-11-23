@@ -10,9 +10,7 @@ const config = () => {
 }
 
 const getAll = () => {
-  console.log('getAll users')
   const request = axios.get(baseUrl)
-  console.log('request', request)
   return request.then(response => response.data)
 }
 
