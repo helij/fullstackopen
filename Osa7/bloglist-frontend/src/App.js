@@ -16,19 +16,7 @@ import { setBlogs } from './reducers/blogReducer'
 import { connect } from 'react-redux'
 import { Container, Menu } from 'semantic-ui-react'
 
-const MenuNav = (username) => (
-  <Menu color='blue'> 
-    <Menu.Item as={NavLink} exact to="/" content="blogs" />
-    <Menu.Item as={NavLink} to="/users" content="users" />
-    <Container className='container-padding'>
-      {username} logged in 
-      <button style={{marginLeft:10}} onClick={this.logout}>logout</button>
-      </Container>
-     
-     
-      
-  </Menu>
-)
+
 
 class App extends React.Component {
   constructor(props) {
@@ -43,6 +31,24 @@ class App extends React.Component {
       notification: null
     }
   }
+
+
+  logout = () => {
+    window.localStorage.removeItem('loggedBlogAppUser')
+    this.notify('logged out')
+    this.setState({ user: null })
+  }
+  
+  MenuNav = (username) => (
+    <Menu color='blue'> 
+      <Menu.Item as={NavLink} exact to="/" content="blogs" />
+      <Menu.Item as={NavLink} to="/users" content="users" />
+      <Container className='container-padding'>
+        {username} logged in 
+        <button style={{marginLeft:10}} onClick={this.logout}>logout</button>
+        </Container>   
+    </Menu>
+  )
 
   componentWillMount() {
     blogService.getAll().then(blogs =>
@@ -81,12 +87,6 @@ class App extends React.Component {
       url: '',
       author: ''
     })
-  }
-
-  logout = () => {
-    window.localStorage.removeItem('loggedBlogAppUser')
-    this.notify('logged out')
-    this.setState({ user: null })
   }
 
   login = async (event) => {
@@ -154,7 +154,7 @@ class App extends React.Component {
           <div>
             <h2>blog app</h2>
             <Notification notification={this.state.notification} />
-            {MenuNav(this.state.user.name)} 
+            {this.MenuNav(this.state.user.name)} 
             <Container className='container-padding'>
               <Togglable buttonLabel='uusi blogi'>
                 <BlogForm
