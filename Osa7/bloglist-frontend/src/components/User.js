@@ -8,18 +8,11 @@ class User extends React.Component {
 
     return (
       <div>
-        <h2>Users</h2>
         <Table striped celled>
           <Table.Body>
-            <Table.Row>
-              <Table.Cell>  </Table.Cell><Table.Cell>blogs added</Table.Cell>
+          <Table.Row>
+              <Table.Cell><h2>{this.props.user.name}</h2>  </Table.Cell><Table.Cell></Table.Cell>
             </Table.Row>
-            {this.props.users.map(user =>
-              <Table.Row key={user._id}>
-
-                <Table.Cell> {user.name} </Table.Cell><Table.Cell>{user.blogs.length} </Table.Cell>
-              </Table.Row>
-            )}
           </Table.Body>
         </Table>
       </div>
@@ -29,9 +22,12 @@ class User extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+
+  console.log('state', state)
   return {
     notification: state.notification,
-    users: state.users
+    users: state.users.users,
+    user: state.users.user
   }
 }
 

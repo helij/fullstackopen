@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Route} from 'react-router-dom'
 import Blog from './components/Blog'
+import UserList from './components/UserList'
 import User from './components/User'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -120,6 +121,8 @@ class App extends React.Component {
     this.setState({ [event.target.name]: event.target.value })
   }
 
+  
+
   render() {
     if (this.state.user === null) {
       return (
@@ -155,7 +158,10 @@ class App extends React.Component {
 
     const blogsInOrder = this.state.blogs.sort(byLikes)
 
+  
+    console.log('renderr')
     return (
+     
       <Router>
       <div>
         <Notification notification={this.state.notification} />
@@ -185,16 +191,24 @@ class App extends React.Component {
           />
         )
       } />
-          <Route exact path="/users" render={() => <User />} />
+      <Route exact path="/users/:id" render={() =>
+               <User />} />
+          <Route path="/users" render={({history}) => <UserList history={history} />} />
+          
       </div>
       </Router>
     );
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+console.log('state app', state)
+console.log('ownProps app', ownProps)
+
   return {
-    notification: state.notification
+    notification: state.notification,
+    users: state.users.users,
+    user: state.users.user
   }
 }
 
