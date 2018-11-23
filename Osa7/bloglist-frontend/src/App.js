@@ -1,4 +1,5 @@
 import React from 'react'
+import { BrowserRouter as Router, Route, Link, NavLink } from 'react-router-dom'
 import Blog from './components/Blog'
 import User from './components/User'
 import BlogForm from './components/BlogForm'
@@ -155,6 +156,7 @@ class App extends React.Component {
     const blogsInOrder = this.state.blogs.sort(byLikes)
 
     return (
+      <Router>
       <div>
         <Notification notification={this.state.notification} />
 
@@ -170,8 +172,10 @@ class App extends React.Component {
           />
         </Togglable>
 
-        <h2>blogs</h2>
-        {blogsInOrder.map(blog => 
+        <h2>blog app</h2>
+        <Route exact path="/" render={() =>
+      
+        blogsInOrder.map(blog => 
           <Blog 
             key={blog._id} 
             blog={blog} 
@@ -179,9 +183,11 @@ class App extends React.Component {
             remove={this.remove(blog._id)}
             deletable={blog.user === undefined || blog.user.username === this.state.user.username}
           />
-        )}
-          <User/>
+        )
+      } />
+          <Route exact path="/users" render={() => <User />} />
       </div>
+      </Router>
     );
   }
 }
