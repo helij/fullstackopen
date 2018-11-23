@@ -3,7 +3,7 @@ import { Container } from 'semantic-ui-react'
 import { notificationCreation } from './../reducers/notificationReducer'
 import { connect } from 'react-redux'
 import blogService from './../services/blogs'
-import { setBlogs } from './../reducers/blogReducer'
+import { setBlogs, setBlog } from './../reducers/blogReducer'
 
 class Blog extends React.Component {
 
@@ -13,10 +13,11 @@ class Blog extends React.Component {
     await blogService.update(id, updated)
     this.props.notificationCreation(`you liked '${updated.title}' by ${updated.author}`, 'info', 10)
     this.props.setBlogs(this.props.blogs.map(b => b._id === id ? updated : b))
+    this.props.setBlog(updated)
   }
 
   remove = (id) => async () => {
-    const deleted = this.state.blogs.find(b => b._id === id)
+    const deleted = this.props.blogs.find(b => b._id === id)
     const ok = window.confirm(`remove blog '${deleted.title}' by ${deleted.author}?`)
     if (ok === false) {
       return
@@ -24,8 +25,8 @@ class Blog extends React.Component {
 
     await blogService.remove(id)
     this.props.notificationCreation(`blog '${deleted.title}' by ${deleted.author} removed`, 'info', 10)
-    this.notify(`blog '${deleted.title}' by ${deleted.author} removed`)
     this.props.setBlogs(this.props.blogs.filter(b => b._id !== id))
+    this.props.setBlog(null)
   }
 
   render() {
@@ -44,32 +45,43 @@ class Blog extends React.Component {
 
     const blog = this.props.blog
 
-    const adder = blog.user ? blog.user.name : 'anonymous'
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
 
-    return (
-      <Container className='container-blog-padding'>
-      <div style={blogStyle}>
-        <div >
-          {blog.title}: {blog.author}
-        </div>
-        <div style={contentStyle} className='content'>
-          <div>
-            <a href={blog.url}>{blog.url}</a>
+    let user = null
+    if (loggedUserJSON) {
+      user = JSON.parse(loggedUserJSON)
+    }
+
+    if (blog !== null) {
+
+      const adder = blog.user ? blog.user.name : 'anonymous'
+      return (
+        <Container className='container-blog-padding'>
+          <div style={blogStyle}>
+            <div >
+              {blog.title}: {blog.author}
+            </div>
+            <div style={contentStyle} className='content'>
+              <div>
+                <a href={blog.url}>{blog.url}</a>
+              </div>
+              <div>
+                {blog.likes} likes <button onClick={this.like(blog._id)}>like</button>
+              </div>
+              <div>
+                added by {adder}
+              </div>
+              {(blog.user === undefined || blog.user.username === user.username) && <div><button onClick={this.remove(blog._id)}>delete</button></div>}
+            </div>
           </div>
-          <div>
-            {blog.likes} likes <button onClick={this.like(blog._id)}>like</button>
-          </div>
-          <div>
-            added by {adder}
-          </div>
-          {(blog.user === undefined || blog.user.username === blog.user.username) && <div><button onClick={this.remove(blog._id)}>delete</button></div>}
-        </div>
-      </div> 
-      </Container> 
-    )
+        </Container>
+      )
+    }
+    else{
+      return <div></div>
+    }
   }
 }
-
 const mapStateToProps = (state) => {
   return {
     notification: state.notification,
@@ -80,7 +92,7 @@ const mapStateToProps = (state) => {
 
 
 const ConnectedBlog = connect(
-  mapStateToProps, {notificationCreation, setBlogs}
+  mapStateToProps, {notificationCreation, setBlogs, setBlog}
 )(Blog)
 
 export default ConnectedBlog
