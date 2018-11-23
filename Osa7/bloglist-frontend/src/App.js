@@ -1,11 +1,14 @@
 import React from 'react'
 import Blog from './components/Blog'
+import User from './components/User'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
+import userService from './services/users'
 import loginService from './services/login'
 import { notificationCreation } from './reducers/notificationReducer'
+import { setUsers } from './reducers/userReducer'
 import { connect } from 'react-redux'
 
 class App extends React.Component {
@@ -33,6 +36,11 @@ class App extends React.Component {
       this.setState({ user })
       blogService.setToken(user.token)
     }
+
+    userService.getAll().then(users =>
+      this.props.setUsers(users)
+    )
+
   } 
 
   notify = (message, type = 'info') => {
@@ -172,6 +180,7 @@ class App extends React.Component {
             deletable={blog.user === undefined || blog.user.username === this.state.user.username}
           />
         )}
+          <User/>
       </div>
     );
   }
@@ -185,7 +194,7 @@ const mapStateToProps = (state) => {
 
 const ConnectedApp = connect(
   mapStateToProps,
-  { notificationCreation }
+  { notificationCreation, setUsers }
 )(App)
 
 export default ConnectedApp
