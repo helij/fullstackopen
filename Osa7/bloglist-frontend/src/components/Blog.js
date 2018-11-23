@@ -1,4 +1,5 @@
 import React from 'react'
+import { Container } from 'semantic-ui-react'
 
 class Blog extends React.Component {
   constructor() {
@@ -26,6 +27,7 @@ class Blog extends React.Component {
     const adder = blog.user ? blog.user.name : 'anonymous'
 
     return (
+      <Container className='container-blog-padding'>
       <div style={blogStyle}>
         <div 
           onClick={() => this.setState({ visible: !this.state.visible })} 
@@ -45,7 +47,8 @@ class Blog extends React.Component {
           </div>
           {deletable && <div><button onClick={remove}>delete</button></div>}
         </div>
-      </div>  
+      </div> 
+      </Container> 
     )
   }
 }

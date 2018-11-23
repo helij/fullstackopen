@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Route} from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Blog from './components/Blog'
 import UserList from './components/UserList'
 import User from './components/User'
@@ -12,6 +12,7 @@ import loginService from './services/login'
 import { notificationCreation } from './reducers/notificationReducer'
 import { setUsers } from './reducers/userReducer'
 import { connect } from 'react-redux'
+import { Container } from 'semantic-ui-react'
 
 class App extends React.Component {
   constructor(props) {
@@ -20,7 +21,7 @@ class App extends React.Component {
       blogs: [],
       user: null,
       username: '',
-      password: '', 
+      password: '',
       title: '',
       author: '',
       url: '',
@@ -43,14 +44,14 @@ class App extends React.Component {
       this.props.setUsers(users)
     )
 
-  } 
+  }
 
   notify = (message, type = 'info') => {
     this.props.notificationCreation(message, type, 10)
   }
 
   like = (id) => async () => {
-    const liked = this.state.blogs.find(b=>b._id===id)
+    const liked = this.state.blogs.find(b => b._id === id)
     const updated = { ...liked, likes: liked.likes + 1 }
     await blogService.update(id, updated)
     this.notify(`you liked '${updated.title}' by ${updated.author}`)
@@ -62,14 +63,14 @@ class App extends React.Component {
   remove = (id) => async () => {
     const deleted = this.state.blogs.find(b => b._id === id)
     const ok = window.confirm(`remove blog '${deleted.title}' by ${deleted.author}?`)
-    if ( ok===false) {
+    if (ok === false) {
       return
     }
 
     await blogService.remove(id)
     this.notify(`blog '${deleted.title}' by ${deleted.author} removed`)
     this.setState({
-      blogs: this.state.blogs.filter(b=>b._id!==id)
+      blogs: this.state.blogs.filter(b => b._id !== id)
     })
   }
 
@@ -80,12 +81,12 @@ class App extends React.Component {
       author: this.state.author,
       url: this.state.url,
     }
-    
-    const result = await blogService.create(blog) 
+
+    const result = await blogService.create(blog)
     this.notify(`blog '${blog.title}' by ${blog.author} added`)
-    this.setState({ 
-      title: '', 
-      url: '', 
+    this.setState({
+      title: '',
+      url: '',
       author: '',
       blogs: this.state.blogs.concat(result)
     })
@@ -121,36 +122,38 @@ class App extends React.Component {
     this.setState({ [event.target.name]: event.target.value })
   }
 
-  
+
 
   render() {
     if (this.state.user === null) {
       return (
-        <div>
-          <Notification notification={this.state.notification} />
-          <h2>Kirjaudu sovellukseen</h2>
-          <form onSubmit={this.login}>
-            <div>
-              käyttäjätunnus
+        <Container className='container-padding'>
+          <div>
+            <Notification notification={this.state.notification} />
+            <h2>Kirjaudu sovellukseen</h2>
+            <form onSubmit={this.login}>
+              <div>
+                käyttäjätunnus
               <input
-                type="text"
-                name="username"
-                value={this.state.username}
-                onChange={this.handleLoginChange}
-              />
-            </div>
-            <div>
-              salasana
+                  type="text"
+                  name="username"
+                  value={this.state.username}
+                  onChange={this.handleLoginChange}
+                />
+              </div>
+              <div>
+                salasana
               <input
-                type="password"
-                name="password"
-                value={this.state.password}
-                onChange={this.handleLoginChange}
-              />
-            </div>
-            <button type="submit">kirjaudu</button>
-          </form>
-        </div>
+                  type="password"
+                  name="password"
+                  value={this.state.password}
+                  onChange={this.handleLoginChange}
+                />
+              </div>
+              <button type="submit">kirjaudu</button>
+            </form>
+          </div>
+        </Container>
       )
     }
 
@@ -158,53 +161,51 @@ class App extends React.Component {
 
     const blogsInOrder = this.state.blogs.sort(byLikes)
 
-  
-    console.log('renderr')
     return (
-     
-      <Router>
-      <div>
-        <Notification notification={this.state.notification} />
+      <Container>
+        <Router>
+          <div>
+            <h2>blog app</h2>
+            <Notification notification={this.state.notification} />
 
-        {this.state.user.name} logged in <button onClick={this.logout}>logout</button>
+            <Container className='container-padding'>
+              {this.state.user.name} logged in <button onClick={this.logout}>logout</button>
+            </Container>
+            <Container className='container-padding'>
+              <Togglable buttonLabel='uusi blogi'>
+                <BlogForm
+                  handleChange={this.handleLoginChange}
+                  title={this.state.title}
+                  author={this.state.author}
+                  url={this.state.url}
+                  handleSubmit={this.addBlog}
+                />
+              </Togglable>
+            </Container>
+            <Route exact path="/" render={() =>
+              blogsInOrder.map(blog =>
+             
+                <Blog
+                  key={blog._id}
+                  blog={blog}
+                  like={this.like(blog._id)}
+                  remove={this.remove(blog._id)}
+                  deletable={blog.user === undefined || blog.user.username === this.state.user.username}
+                />
+              )
+            } />
+            <Route exact path="/users/:id" render={() =>
+              <User />} />
+            <Route path="/users" render={({ history }) => <UserList history={history} />} />
 
-        <Togglable buttonLabel='uusi blogi'>
-          <BlogForm 
-            handleChange={this.handleLoginChange}
-            title={this.state.title}
-            author={this.state.author}
-            url={this.state.url}
-            handleSubmit={this.addBlog}
-          />
-        </Togglable>
-
-        <h2>blog app</h2>
-        <Route exact path="/" render={() =>
-      
-        blogsInOrder.map(blog => 
-          <Blog 
-            key={blog._id} 
-            blog={blog} 
-            like={this.like(blog._id)}
-            remove={this.remove(blog._id)}
-            deletable={blog.user === undefined || blog.user.username === this.state.user.username}
-          />
-        )
-      } />
-      <Route exact path="/users/:id" render={() =>
-               <User />} />
-          <Route path="/users" render={({history}) => <UserList history={history} />} />
-          
-      </div>
-      </Router>
+          </div>
+        </Router>
+      </Container>
     );
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-console.log('state app', state)
-console.log('ownProps app', ownProps)
-
+const mapStateToProps = (state) => {
   return {
     notification: state.notification,
     users: state.users.users,

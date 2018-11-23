@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Table } from 'semantic-ui-react'
+import { Grid, Container } from 'semantic-ui-react'
 
 class User extends React.Component {
 
@@ -8,13 +8,27 @@ class User extends React.Component {
 
     return (
       <div>
-        <Table striped celled>
-          <Table.Body>
-          <Table.Row>
-              <Table.Cell><h2>{this.props.user.name}</h2>  </Table.Cell><Table.Cell></Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table>
+          <Grid columns={1} padded>
+            <Grid.Column>
+            <Container className='container-padding'>
+              <Grid.Row key = {this.props.user._id}>
+                <h2>{this.props.user.name}</h2>
+              </Grid.Row>
+              </Container>
+              <Container className='container-padding'>
+              <Grid.Row>
+                <h3>added blogs</h3>
+              </Grid.Row>
+              </Container>
+              <Container className='container-padding'>
+              {this.props.user.blogs.map(blog =>
+                <Grid.Row key = {blog._id}>
+                  <li>{blog.title}</li>
+                </Grid.Row>
+              )}
+              </Container>
+            </Grid.Column>
+          </Grid>
       </div>
 
     )
@@ -22,8 +36,6 @@ class User extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-
-  console.log('state', state)
   return {
     notification: state.notification,
     users: state.users.users,

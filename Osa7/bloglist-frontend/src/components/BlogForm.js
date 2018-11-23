@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Container } from 'semantic-ui-react'
 
 const BlogForm = ({ title, author, url, handleChange, handleSubmit }) => {
   return (
+    <Container className='container-padding'>
     <div>
       <h2>Luo uusi blogi</h2>
 
@@ -35,7 +37,9 @@ const BlogForm = ({ title, author, url, handleChange, handleSubmit }) => {
         <button type="submit">Luo</button>
       </form>
     </div>
+    </Container>
   )
+  
 }
 
 BlogForm.propTypes = {
