@@ -11,8 +11,6 @@ const blogReducer = (state = {blogs: [], blog: {}}, action) => {
 
 export const setBlogs = (blogs) => {
   return async (dispatch) => {
-
-    console.log('blogs', blogs)
     dispatch({
       type: 'SET_BLOGS',
       blogs
@@ -21,10 +19,8 @@ export const setBlogs = (blogs) => {
   }
 }
 
-
 export const setBlog = (blog) => {
   return async (dispatch) => {
-    console.log('blog', blog)
     dispatch({
       type: 'SET_BLOG',
       blog

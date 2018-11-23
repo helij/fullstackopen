@@ -132,11 +132,7 @@ class App extends React.Component {
           </div>
         </Container>
       )
-    }
-
-    const byLikes = (b1, b2) => b2.likes - b1.likes
-
-    const blogsInOrder = this.props.blogs.sort(byLikes)
+      }
 
     return (
       <Container>
@@ -174,7 +170,6 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log('state', state)
   return {
     notification: state.notification,
     users: state.users.users,
