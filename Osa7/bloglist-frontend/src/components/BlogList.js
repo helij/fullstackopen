@@ -1,6 +1,5 @@
 import React from 'react'
-import { Container } from 'semantic-ui-react'
-import { BrowserRouter as Router, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Table } from 'semantic-ui-react'
 import { setBlog } from './../reducers/blogReducer'

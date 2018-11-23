@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
 import Blog from './components/Blog'
 import BlogList from './components/BlogList'
 import UserList from './components/UserList'
@@ -14,7 +14,21 @@ import { notificationCreation } from './reducers/notificationReducer'
 import { setUsers } from './reducers/userReducer'
 import { setBlogs } from './reducers/blogReducer'
 import { connect } from 'react-redux'
-import { Container } from 'semantic-ui-react'
+import { Container, Menu } from 'semantic-ui-react'
+
+const MenuNav = (username) => (
+  <Menu color='blue'> 
+    <Menu.Item as={NavLink} exact to="/" content="blogs" />
+    <Menu.Item as={NavLink} to="/users" content="users" />
+    <Container className='container-padding'>
+      {username} logged in 
+      <button style={{marginLeft:10}} onClick={this.logout}>logout</button>
+      </Container>
+     
+     
+      
+  </Menu>
+)
 
 class App extends React.Component {
   constructor(props) {
@@ -140,10 +154,7 @@ class App extends React.Component {
           <div>
             <h2>blog app</h2>
             <Notification notification={this.state.notification} />
-
-            <Container className='container-padding'>
-              {this.state.user.name} logged in <button onClick={this.logout}>logout</button>
-            </Container>
+            {MenuNav(this.state.user.name)} 
             <Container className='container-padding'>
               <Togglable buttonLabel='uusi blogi'>
                 <BlogForm
@@ -157,10 +168,10 @@ class App extends React.Component {
             </Container>
             <Route exact path="/blogs/:id" render={() =>
               <Blog />} />
-            <Route path="/" render={({ history }) => <BlogList history={history} />} />
+            <Route exact path="/" render={({ history }) => <BlogList history={history} />} />
             <Route exact path="/users/:id" render={() =>
               <User />} />
-            <Route path="/users" render={({ history }) => <UserList history={history} />} />
+            <Route exact path="/users" render={({ history }) => <UserList history={history} />} />
 
           </div>
         </Router>
