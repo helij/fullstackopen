@@ -3,6 +3,7 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import notificationReducer from './reducers/notificationReducer'
 import userReducer from './reducers/userReducer'
+import blogReducer from './reducers/blogReducer'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
@@ -14,7 +15,8 @@ const persistConfig = {
 
 const reducer = combineReducers({
   notification: notificationReducer,
-  users: userReducer
+  users: userReducer,
+  blogs: blogReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, reducer)

@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Blog from './components/Blog'
+import BlogList from './components/BlogList'
 import UserList from './components/UserList'
 import User from './components/User'
 import BlogForm from './components/BlogForm'
@@ -11,6 +12,7 @@ import userService from './services/users'
 import loginService from './services/login'
 import { notificationCreation } from './reducers/notificationReducer'
 import { setUsers } from './reducers/userReducer'
+import { setBlogs } from './reducers/blogReducer'
 import { connect } from 'react-redux'
 import { Container } from 'semantic-ui-react'
 
@@ -18,7 +20,6 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      blogs: [],
       user: null,
       username: '',
       password: '',
@@ -31,7 +32,7 @@ class App extends React.Component {
 
   componentWillMount() {
     blogService.getAll().then(blogs =>
-      this.setState({ blogs })
+      this.props.setBlogs(blogs)
     )
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
@@ -50,30 +51,6 @@ class App extends React.Component {
     this.props.notificationCreation(message, type, 10)
   }
 
-  like = (id) => async () => {
-    const liked = this.state.blogs.find(b => b._id === id)
-    const updated = { ...liked, likes: liked.likes + 1 }
-    await blogService.update(id, updated)
-    this.notify(`you liked '${updated.title}' by ${updated.author}`)
-    this.setState({
-      blogs: this.state.blogs.map(b => b._id === id ? updated : b)
-    })
-  }
-
-  remove = (id) => async () => {
-    const deleted = this.state.blogs.find(b => b._id === id)
-    const ok = window.confirm(`remove blog '${deleted.title}' by ${deleted.author}?`)
-    if (ok === false) {
-      return
-    }
-
-    await blogService.remove(id)
-    this.notify(`blog '${deleted.title}' by ${deleted.author} removed`)
-    this.setState({
-      blogs: this.state.blogs.filter(b => b._id !== id)
-    })
-  }
-
   addBlog = async (event) => {
     event.preventDefault()
     const blog = {
@@ -84,11 +61,11 @@ class App extends React.Component {
 
     const result = await blogService.create(blog)
     this.notify(`blog '${blog.title}' by ${blog.author} added`)
+    this.props.setBlogs(this.props.blogs.concat(result))
     this.setState({
       title: '',
       url: '',
-      author: '',
-      blogs: this.state.blogs.concat(result)
+      author: ''
     })
   }
 
@@ -159,7 +136,7 @@ class App extends React.Component {
 
     const byLikes = (b1, b2) => b2.likes - b1.likes
 
-    const blogsInOrder = this.state.blogs.sort(byLikes)
+    const blogsInOrder = this.props.blogs.sort(byLikes)
 
     return (
       <Container>
@@ -182,18 +159,9 @@ class App extends React.Component {
                 />
               </Togglable>
             </Container>
-            <Route exact path="/" render={() =>
-              blogsInOrder.map(blog =>
-             
-                <Blog
-                  key={blog._id}
-                  blog={blog}
-                  like={this.like(blog._id)}
-                  remove={this.remove(blog._id)}
-                  deletable={blog.user === undefined || blog.user.username === this.state.user.username}
-                />
-              )
-            } />
+            <Route exact path="/blogs/:id" render={() =>
+              <Blog />} />
+            <Route path="/" render={({ history }) => <BlogList history={history} />} />
             <Route exact path="/users/:id" render={() =>
               <User />} />
             <Route path="/users" render={({ history }) => <UserList history={history} />} />
@@ -206,16 +174,19 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log('state', state)
   return {
     notification: state.notification,
     users: state.users.users,
-    user: state.users.user
+    user: state.users.user,
+    blogs: state.blogs.blogs,
+    blog: state.blogs.blog
   }
 }
 
 const ConnectedApp = connect(
   mapStateToProps,
-  { notificationCreation, setUsers }
+  { notificationCreation, setUsers, setBlogs }
 )(App)
 
 export default ConnectedApp
