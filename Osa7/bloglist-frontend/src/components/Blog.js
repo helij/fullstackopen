@@ -16,6 +16,14 @@ class Blog extends React.Component {
     this.props.setBlog(updated)
   }
 
+  addComment = (id,comment) => async () => {
+
+    const updated = await blogService.addComment(id, comment)
+    this.props.notificationCreation('comment: ' + comment, 'info', 10)
+    this.props.setBlogs(this.props.blogs.map(b => b._id === id ? updated : b))
+    this.props.setBlog(updated)
+  }
+
   remove = (id) => async () => {
     const deleted = this.props.blogs.find(b => b._id === id)
     const ok = window.confirm(`remove blog '${deleted.title}' by ${deleted.author}?`)
@@ -74,6 +82,7 @@ class Blog extends React.Component {
               {(blog.user === undefined || blog.user.username === user.username) && <div><button onClick={this.remove(blog._id)}>delete</button></div>}
             </div>
             <h3>Comments</h3>
+             <button onClick={this.addComment(blog._id, 'Testi')}>add comment</button>
             {this.props.blog.comments.map(comment =>
             <div><li>{comment}</li></div>
             )}
