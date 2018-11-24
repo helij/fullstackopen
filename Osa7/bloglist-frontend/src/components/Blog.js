@@ -7,6 +7,13 @@ import { setBlogs, setBlog } from './../reducers/blogReducer'
 
 class Blog extends React.Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      comment: ''
+    }
+  }
+
   like = (id) => async () => {
     const liked = this.props.blogs.find(b => b._id === id)
     const updated = { ...liked, likes: liked.likes + 1 }
@@ -16,12 +23,12 @@ class Blog extends React.Component {
     this.props.setBlog(updated)
   }
 
-  addComment = (id,comment) => async () => {
-
+  addComment = (id, comment) => async () => {
     const updated = await blogService.addComment(id, comment)
     this.props.notificationCreation('comment: ' + comment, 'info', 10)
     this.props.setBlogs(this.props.blogs.map(b => b._id === id ? updated : b))
     this.props.setBlog(updated)
+    this.setState({ comment: '' })
   }
 
   remove = (id) => async () => {
@@ -35,6 +42,10 @@ class Blog extends React.Component {
     this.props.notificationCreation(`blog '${deleted.title}' by ${deleted.author} removed`, 'info', 10)
     this.props.setBlogs(this.props.blogs.filter(b => b._id !== id))
     this.props.setBlog(null)
+  }
+
+  handleChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value })
   }
 
   render() {
@@ -82,15 +93,22 @@ class Blog extends React.Component {
               {(blog.user === undefined || blog.user.username === user.username) && <div><button onClick={this.remove(blog._id)}>delete</button></div>}
             </div>
             <h3>Comments</h3>
-             <button onClick={this.addComment(blog._id, 'Testi')}>add comment</button>
-            {this.props.blog.comments.map(comment =>
-            <div><li>{comment}</li></div>
+            <div>
+              <input
+                value={this.state.comment}
+                name='comment'
+                onChange={this.handleChange}
+              />
+              <button onClick={this.addComment(blog._id, this.state.comment)}>add comment</button>
+            </div>
+            {this.props.blog.comments.map((comment, i) =>
+              <div key={i}><li>{comment}</li></div>
             )}
           </div>
         </Container>
       )
     }
-    else{
+    else {
       return <div></div>
     }
   }
@@ -105,7 +123,7 @@ const mapStateToProps = (state) => {
 
 
 const ConnectedBlog = connect(
-  mapStateToProps, {notificationCreation, setBlogs, setBlog}
+  mapStateToProps, { notificationCreation, setBlogs, setBlog }
 )(Blog)
 
 export default ConnectedBlog
