@@ -6,6 +6,7 @@ import userReducer from './reducers/userReducer'
 import blogReducer from './reducers/blogReducer'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
+import loginReducer from './reducers/loginReducer';
 
 
 const persistConfig = {
@@ -16,7 +17,8 @@ const persistConfig = {
 const reducer = combineReducers({
   notification: notificationReducer,
   users: userReducer,
-  blogs: blogReducer
+  blogs: blogReducer,
+  loggedInUser: loginReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, reducer)

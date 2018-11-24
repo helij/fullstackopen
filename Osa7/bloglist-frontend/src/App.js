@@ -13,6 +13,7 @@ import loginService from './services/login'
 import { notificationCreation } from './reducers/notificationReducer'
 import { setUsers } from './reducers/userReducer'
 import { setBlogs } from './reducers/blogReducer'
+import { setLoggedInUser, removeLoggedInUser } from './reducers/loginReducer'
 import { connect } from 'react-redux'
 import { Container, Menu } from 'semantic-ui-react'
 
@@ -22,7 +23,6 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      user: null,
       username: '',
       password: '',
       title: '',
@@ -36,15 +36,15 @@ class App extends React.Component {
   logout = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
     this.notify('logged out')
-    this.setState({ user: null })
+    this.props.removeLoggedInUser()
   }
   
-  MenuNav = (username) => (
+  MenuNav = () => (
     <Menu color='blue'> 
       <Menu.Item as={NavLink} exact to="/" content="blogs" />
       <Menu.Item as={NavLink} to="/users" content="users" />
       <Container className='container-padding'>
-        {username} logged in 
+        {this.props.loggedInUser.username} logged in 
         <button style={{marginLeft:10}} onClick={this.logout}>logout</button>
         </Container>   
     </Menu>
@@ -57,7 +57,7 @@ class App extends React.Component {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      this.setState({ user })
+      this.props.setLoggedInUser(user)
       blogService.setToken(user.token)
     }
 
@@ -100,7 +100,7 @@ class App extends React.Component {
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
       blogService.setToken(user.token)
       this.notify('welcome back!')
-      this.setState({ username: '', password: '', user })
+      this.props.setLoggedInUser(user)
     } catch (exception) {
       this.notify('käyttäjätunnus tai salasana virheellinen', 'error')
       setTimeout(() => {
@@ -116,7 +116,7 @@ class App extends React.Component {
 
 
   render() {
-    if (this.state.user === null) {
+    if (this.props.loggedInUser === null) {
       return (
         <Container className='container-padding'>
           <div>
@@ -154,7 +154,7 @@ class App extends React.Component {
           <div>
             <h2>blog app</h2>
             <Notification notification={this.state.notification} />
-            {this.MenuNav(this.state.user.name)} 
+            {this.MenuNav()} 
             <Container className='container-padding'>
               <Togglable buttonLabel='uusi blogi'>
                 <BlogForm
@@ -186,13 +186,14 @@ const mapStateToProps = (state) => {
     users: state.users.users,
     user: state.users.user,
     blogs: state.blogs.blogs,
-    blog: state.blogs.blog
+    blog: state.blogs.blog,
+    loggedInUser: state.loggedInUser
   }
 }
 
 const ConnectedApp = connect(
   mapStateToProps,
-  { notificationCreation, setUsers, setBlogs }
+  { notificationCreation, setUsers, setBlogs, setLoggedInUser, removeLoggedInUser}
 )(App)
 
 export default ConnectedApp
