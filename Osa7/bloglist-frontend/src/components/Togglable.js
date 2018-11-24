@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button } from 'semantic-ui-react'
 
 class Togglable extends React.Component {
   constructor(props) {
@@ -23,7 +24,7 @@ class Togglable extends React.Component {
         </div>
         <div style={showWhenVisible}>
           {this.props.children}
-          <button onClick={this.toggleVisibility}>cancel</button>
+          <Button onClick={this.toggleVisibility}>cancel</Button>
         </div>
       </div>
     )

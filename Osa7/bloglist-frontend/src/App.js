@@ -23,8 +23,6 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      username: '',
-      password: '',
       title: '',
       author: '',
       url: '',
@@ -42,7 +40,7 @@ class App extends React.Component {
   MenuNav = () => (
     <Menu color='blue'> 
       <Menu.Item as={NavLink} exact to="/" content="blogs" />
-      <Menu.Item as={NavLink} to="/users" content="users" />
+      <Menu.Item as={NavLink} exact to="/users" content="users" />
       <Container className='container-padding'>
         {this.props.loggedInUser.username} logged in 
         <button style={{marginLeft:10}} onClick={this.logout}>logout</button>
@@ -101,33 +99,6 @@ class App extends React.Component {
       
       return (
         <LoginForm/>
-        /*<Container className='container-padding'>
-          <div>
-            <Notification notification={this.state.notification} />
-            <h2>Kirjaudu sovellukseen</h2>
-            <form onSubmit={this.login}>
-              <div>
-                käyttäjätunnus
-              <input
-                  type="text"
-                  name="username"
-                  value={this.state.username}
-                  onChange={this.handleLoginChange}
-                />
-              </div>
-              <div>
-                salasana
-              <input
-                  type="password"
-                  name="password"
-                  value={this.state.password}
-                  onChange={this.handleLoginChange}
-                />
-              </div>
-              <button type="submit">kirjaudu</button>
-            </form>
-          </div>
-        </Container>*/
       )
       }
 
