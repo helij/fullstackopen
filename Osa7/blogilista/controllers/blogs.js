@@ -49,23 +49,16 @@ blogRouter.post('/:id/comments', async (request, response) => {
   try {
     const { comment } = request.body
     let blog = await Blog.findById(request.params.id)
-    console.log(comment)
-    console.log(blog)
-
-   // blog = {...blog, comments: blog.comments === undefined ? [] : blog.comments} 
 
     blog.comments = blog.comments.concat(comment)
-    console.log('2',blog)
+ 
     const token = request.token
     const decodedToken = jwt.verify(token, process.env.SECRET)
 
     if (!token || !decodedToken.id) {
       return response.status(401).json({ error: 'token missing or invalid' })
     }
-
     const result = await blog.save()
-  
-    console.log(result)
     response.status(201).json(result)
   } catch (exception) {
     if (exception.name === 'JsonWebTokenError') {
