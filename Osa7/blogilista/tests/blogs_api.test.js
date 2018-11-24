@@ -4,15 +4,21 @@ const api = supertest(app)
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
-const { filter, blogsInDb, usersInDb, initialBlogs } = require('./test_helper2')
+const { filter, blogsInDb, usersInDb, initialBlogs, initialUser, getToken } = require('./test_helper')
+
+let loggedInUser = null
 
 beforeAll(async () => {
   await Blog.remove({})
   await User.remove({})
+  let user = new User(initialUser)
+  loggedInUser = await user.save()
   let blog = new Blog(initialBlogs[0])
+  blog.user = loggedInUser._id
   await blog.save()
 
   blog = new Blog(initialBlogs[1])
+  blog.user = loggedInUser._id
   await blog.save()
 })
 
@@ -37,10 +43,12 @@ test('a new blog can be created', async () => {
     title: 'osa 4',
     url: 'http://localhost:4000/osa4/',
     likes: 2,
+    comments: ['Jep']
   }
 
-  const posti = await api
+  await api
     .post('/api/blogs')
+    .set('Authorization', 'Bearer ' + getToken(loggedInUser))
     .send(newBlog)
 
   const blogsInApp = (await blogsInDb()).map(filter)
@@ -49,24 +57,36 @@ test('a new blog can be created', async () => {
 
 })
 
+test('comments can be added', async () => {
+  const blogsBeforeOperation = await blogsInDb()
+  const blogToAlter = blogsBeforeOperation[0]
+
+  const blogAltered = await api
+    .post(`/api/blogs/${blogToAlter._id}/comments`)
+    .send({ comment: 'Test comment' })
+    .set('Authorization', 'Bearer ' + getToken(loggedInUser))
+    .expect(200)
+
+
+  expect(blogToAlter.comments).not.toContainEqual('Test comment')
+  expect(blogAltered.body.comments).toContainEqual('Test comment')
+
+})
+
 test('a new blog gets by default 0 likes', async () => {
+
   const newBlog = {
     author: 'Matti Luukkainen',
     title: 'osa 4',
     url: 'http://localhost:4000/osa4/',
   }
 
-  await api
+  const addedBlog = await api
     .post('/api/blogs')
+    .set('Authorization', 'Bearer ' + getToken(loggedInUser))
     .send(newBlog)
 
-  const blogsAfterOperation = await api
-    .get('/api/blogs')
-
-  const blogsInApp = await blogsInDb()
-
-  newBlog.likes = 0
-  expect(blogsInApp.map(filter)).toContainEqual(newBlog)
+  expect(addedBlog.body.likes).toBe(0)
 })
 
 test('if a required field missing, blog is not created ', async () => {
@@ -79,6 +99,7 @@ test('if a required field missing, blog is not created ', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', 'Bearer ' + getToken(loggedInUser))
     .send(newBlog)
     .expect(400)
 
@@ -87,7 +108,7 @@ test('if a required field missing, blog is not created ', async () => {
   expect(blogsBeforeOperation.body).toEqual(blogsAfterOperation.body)
 })
 
-test('contents of a blog can be alteder', async () => {
+test('contents of a blog can be altered', async () => {
   const blogsBeforeOperation = await blogsInDb()
 
   const blogToAlter = blogsBeforeOperation[0]
@@ -99,22 +120,25 @@ test('contents of a blog can be alteder', async () => {
     likes: blogToAlter.likes + 1
   }
 
-  await api
+  const savedBlog = await api
     .put(`/api/blogs/${blogToAlter._id}`)
     .send(alteredBlog)
     .expect(200)
 
-  const blogsAfterOperation = await blogsInDb()
-  expect(blogsAfterOperation.map(filter)).toContainEqual(alteredBlog)
+  expect(savedBlog.body.likes).toBe(alteredBlog.likes)
+
 })
 
 test('a blog can be deleted', async () => {
+
+
   const blogsBeforeOperation = await blogsInDb()
 
   const blogToDelete = blogsBeforeOperation[0]
-
+  
   await api
     .delete(`/api/blogs/${blogToDelete._id}`)
+    .set('Authorization', 'Bearer ' + getToken(loggedInUser))
     .expect(204)
 
   const blogsAfterOperation = await blogsInDb()

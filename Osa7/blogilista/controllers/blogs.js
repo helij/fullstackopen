@@ -59,7 +59,7 @@ blogRouter.post('/:id/comments', async (request, response) => {
       return response.status(401).json({ error: 'token missing or invalid' })
     }
     const result = await blog.save()
-    response.status(201).json(result)
+    response.status(200).json(result)
   } catch (exception) {
     if (exception.name === 'JsonWebTokenError') {
       response.status(401).json({ error: exception.message })
