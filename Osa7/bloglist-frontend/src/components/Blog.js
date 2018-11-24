@@ -73,6 +73,10 @@ class Blog extends React.Component {
               </div>
               {(blog.user === undefined || blog.user.username === user.username) && <div><button onClick={this.remove(blog._id)}>delete</button></div>}
             </div>
+            <h3>Comments</h3>
+            {this.props.blog.comments.map(comment =>
+            <div><li>{comment}</li></div>
+            )}
           </div>
         </Container>
       )
