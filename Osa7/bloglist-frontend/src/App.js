@@ -9,13 +9,13 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import userService from './services/users'
-import loginService from './services/login'
 import { notificationCreation } from './reducers/notificationReducer'
 import { setUsers } from './reducers/userReducer'
 import { setBlogs } from './reducers/blogReducer'
 import { setLoggedInUser, removeLoggedInUser } from './reducers/loginReducer'
 import { connect } from 'react-redux'
 import { Container, Menu } from 'semantic-ui-react'
+import LoginForm from './components/LoginForm';
 
 
 
@@ -89,25 +89,6 @@ class App extends React.Component {
     })
   }
 
-  login = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({
-        username: this.state.username,
-        password: this.state.password
-      })
-
-      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      this.notify('welcome back!')
-      this.props.setLoggedInUser(user)
-    } catch (exception) {
-      this.notify('käyttäjätunnus tai salasana virheellinen', 'error')
-      setTimeout(() => {
-        this.setState({ error: null })
-      }, 5000)
-    }
-  }
 
   handleLoginChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
@@ -117,8 +98,10 @@ class App extends React.Component {
 
   render() {
     if (this.props.loggedInUser === null) {
+      
       return (
-        <Container className='container-padding'>
+        <LoginForm/>
+        /*<Container className='container-padding'>
           <div>
             <Notification notification={this.state.notification} />
             <h2>Kirjaudu sovellukseen</h2>
@@ -144,7 +127,7 @@ class App extends React.Component {
               <button type="submit">kirjaudu</button>
             </form>
           </div>
-        </Container>
+        </Container>*/
       )
       }
 
