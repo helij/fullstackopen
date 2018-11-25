@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import blogService from './../services/blogs'
 import { setBlogs, setBlog } from './../reducers/blogReducer'
 
-class Blog extends React.Component {
+export class Blog extends React.Component {
 
   constructor(props) {
     super(props)
@@ -78,7 +78,7 @@ class Blog extends React.Component {
             <div >
               {blog.title}: {blog.author}
             </div>
-            <div style={contentStyle} className='content'>
+            <div style={contentStyle}>
               <div>
                 <a href={blog.url}>{blog.url}</a>
               </div>

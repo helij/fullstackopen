@@ -1,32 +1,31 @@
 import React from 'react'
-import { shallow } from 'enzyme'
-import Blog from './Blog'
+import { mount } from 'enzyme'
+import { Blog } from './Blog'
 
 describe.only('<Blog />', () => {
   let blogComponent
+  let blog
+
 
   beforeEach(() => {
-    const blog = {
+    blog = {
+      _id: '3493094',
       title: 'Go To Statement Considered Harmful',
       author: 'Edsger W. Dijkstra',
       url: '',
-      likes: 3
+      likes: 3,
+      comments: ['Test comment']
     }
-    blogComponent = shallow(
-      <Blog blog={blog} />
+  
+    blogComponent = mount(
+      <Blog  blog={blog} />
     )
   })
 
-  it('at start the details are not displayed', () => {
-    const contentDiv = blogComponent.find('.content')
-    expect(contentDiv.getElement().props.style.display).toEqual('none')
+  it('renders title and author', () => {
+
+    expect(blogComponent.text()).toContain(blog.title)
+    expect(blogComponent.text()).toContain(blog.author)
   })
-
-  it('after clicking name the details are displayed', () => {
-    const nameDiv = blogComponent.find('.name')
-    nameDiv.simulate('click')
-
-    const contentDiv = blogComponent.find('.content')
-    expect(contentDiv.getElement().props.style.display).toEqual('')
-  })  
+  
 })
