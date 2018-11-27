@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
+import { HashRouter as Router, Route, NavLink } from 'react-router-dom'
 import Blog from './components/Blog'
 import BlogList from './components/BlogList'
 import UserList from './components/UserList'
@@ -10,7 +10,7 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import userService from './services/users'
 import { notificationCreation } from './reducers/notificationReducer'
-import { setUsers } from './reducers/userReducer'
+import { setUsers, setUser } from './reducers/userReducer'
 import { setBlogs } from './reducers/blogReducer'
 import { setLoggedInUser, removeLoggedInUser } from './reducers/loginReducer'
 import { connect } from 'react-redux'
@@ -35,24 +35,24 @@ class App extends React.Component {
     this.notify('logged out')
     this.props.removeLoggedInUser()
   }
-  
+
   MenuNav = () => (
-    <Menu color='blue'> 
+    <Menu color='blue'>
       <Menu.Item as={NavLink} exact to="/" content="blogs" />
       <Menu.Item as={NavLink} exact to="/users" content="users" />
       <Container className='container-padding'>
-        {this.props.loggedInUser.username} logged in 
-        <button style={{marginLeft:10}} onClick={this.logout}>logout</button>
-        </Container>   
+        {this.props.loggedInUser.username} logged in
+        <button style={{ marginLeft: 10 }} onClick={this.logout}>logout</button>
+      </Container>
     </Menu>
   )
 
   async componentWillMount() {
-    
+
     const blogs = await blogService.getAll()
 
-      this.props.setBlogs(blogs)
-    
+    this.props.setBlogs(blogs)
+
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
@@ -60,9 +60,9 @@ class App extends React.Component {
       blogService.setToken(user.token)
     }
     const users = await userService.getAll()
-   
-      this.props.setUsers(users)
-    
+
+    this.props.setUsers(users)
+
 
   }
 
@@ -78,18 +78,22 @@ class App extends React.Component {
       url: this.state.url,
     }
 
-    await blogService.create(blog)
+    const result = await blogService.create(blog)
+  
     this.notify(`blog '${blog.title}' by ${blog.author} added`)
     const blogs = await blogService.getAll()
     this.props.setBlogs(blogs)
     const users = await userService.getAll()
+    const user = users.find(user => user._id === result.user._id)
+
     this.props.setUsers(users)
+    this.props.setUser(user)
     this.setState({
       title: '',
       url: '',
       author: ''
     })
-    
+
   }
 
   handleLoginChange = (event) => {
@@ -100,19 +104,19 @@ class App extends React.Component {
 
   render() {
     if (this.props.loggedInUser === null) {
-      
+
       return (
-        <LoginForm/>
+        <LoginForm />
       )
-      }
+    }
 
     return (
       <Container>
-        <Router>
+        <Router  >
           <div>
             <h2>blog app</h2>
             <Notification />
-            {this.MenuNav()} 
+            {this.MenuNav()}
             <Container className='container-padding'>
               <Togglable buttonLabel='uusi blogi'>
                 <BlogForm
@@ -151,7 +155,7 @@ const mapStateToProps = (state) => {
 
 const ConnectedApp = connect(
   mapStateToProps,
-  { notificationCreation, setUsers, setBlogs, setLoggedInUser, removeLoggedInUser}
+  { notificationCreation, setUsers, setBlogs, setLoggedInUser, removeLoggedInUser, setUser }
 )(App)
 
 export default ConnectedApp
