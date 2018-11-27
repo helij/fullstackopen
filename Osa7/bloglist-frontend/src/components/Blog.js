@@ -3,7 +3,10 @@ import { Container } from 'semantic-ui-react'
 import { notificationCreation } from './../reducers/notificationReducer'
 import { connect } from 'react-redux'
 import blogService from './../services/blogs'
+import userService from './../services/users'
 import { setBlogs, setBlog } from './../reducers/blogReducer'
+import { setUsers } from './../reducers/userReducer'
+import PropTypes from 'prop-types'
 
 export class Blog extends React.Component {
 
@@ -39,9 +42,16 @@ export class Blog extends React.Component {
     }
 
     await blogService.remove(id)
+    
     this.props.notificationCreation(`blog '${deleted.title}' by ${deleted.author} removed`, 'info', 10)
-    this.props.setBlogs(this.props.blogs.filter(b => b._id !== id))
+    
+    const blogs = await blogService.getAll()
+    this.props.setBlogs(blogs)
+    const users = await userService.getAll()
+    this.props.setUsers(users)
+
     this.props.setBlog(null)
+    this.props.history.push('/')
   }
 
   handleChange = (event) => {
@@ -121,7 +131,17 @@ const mapStateToProps = (state) => {
 
 
 const ConnectedBlog = connect(
-  mapStateToProps, { notificationCreation, setBlogs, setBlog }
+  mapStateToProps, { notificationCreation, setBlogs, setBlog, setUsers }
 )(Blog)
+
+Blog.propTypes = {
+  notification: PropTypes.object.isRequired,
+  blogs: PropTypes.array.isRequired,
+  blog: PropTypes.object,
+  notificationCreation: PropTypes.func.isRequired,
+  setBlogs: PropTypes.func.isRequired,
+  setBlog: PropTypes.func.isRequired,
+  setUsers: PropTypes.func.isRequired
+}
 
 export default ConnectedBlog

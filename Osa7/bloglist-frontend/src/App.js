@@ -47,20 +47,22 @@ class App extends React.Component {
     </Menu>
   )
 
-  componentWillMount() {
-    blogService.getAll().then(blogs =>
+  async componentWillMount() {
+    
+    const blogs = await blogService.getAll()
+
       this.props.setBlogs(blogs)
-    )
+    
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       this.props.setLoggedInUser(user)
       blogService.setToken(user.token)
     }
-
-    userService.getAll().then(users =>
+    const users = await userService.getAll()
+   
       this.props.setUsers(users)
-    )
+    
 
   }
 
@@ -76,16 +78,19 @@ class App extends React.Component {
       url: this.state.url,
     }
 
-    const result = await blogService.create(blog)
+    await blogService.create(blog)
     this.notify(`blog '${blog.title}' by ${blog.author} added`)
-    this.props.setBlogs(this.props.blogs.concat(result))
+    const blogs = await blogService.getAll()
+    this.props.setBlogs(blogs)
+    const users = await userService.getAll()
+    this.props.setUsers(users)
     this.setState({
       title: '',
       url: '',
       author: ''
     })
+    
   }
-
 
   handleLoginChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
@@ -106,6 +111,7 @@ class App extends React.Component {
         <Router>
           <div>
             <h2>blog app</h2>
+            <Notification />
             {this.MenuNav()} 
             <Container className='container-padding'>
               <Togglable buttonLabel='uusi blogi'>
@@ -118,8 +124,8 @@ class App extends React.Component {
                 />
               </Togglable>
             </Container>
-            <Route exact path="/blogs/:id" render={() =>
-              <Blog />} />
+            <Route exact path="/blogs/:id" render={({ history }) =>
+              <Blog history={history} />} />
             <Route exact path="/" render={({ history }) => <BlogList history={history} />} />
             <Route exact path="/users/:id" render={() =>
               <User />} />

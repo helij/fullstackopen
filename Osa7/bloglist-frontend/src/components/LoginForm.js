@@ -6,6 +6,7 @@ import loginService from './../services/login'
 import { notificationCreation } from './../reducers/notificationReducer'
 import { setLoggedInUser } from './../reducers/loginReducer'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
 
 class LoginForm extends React.Component {
@@ -112,5 +113,12 @@ const ConnectedApp = connect(
     mapStateToProps,
     { notificationCreation, setLoggedInUser }
 )(LoginForm)
+
+LoginForm.propTypes = {
+    notification: PropTypes.object.isRequired,
+    loggedInUser: PropTypes.object.isRequired,
+    notificationCreation: PropTypes.func.isRequired,
+    setLoggedInUser: PropTypes.func.isRequired
+  }
 
 export default ConnectedApp

@@ -1,14 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-
 import { connect } from 'react-redux'
 import { Table } from 'semantic-ui-react'
 import { setUser } from './../reducers/userReducer'
+import PropTypes from 'prop-types'
 
 class UserList extends React.Component {
 
   addUser = (e, id, url) => {
-   // e.preventDefault()
+    e.preventDefault()
     this.props.setUser(this.props.users.find(a => a._id === id))
     this.props.history.push(url)
 
@@ -47,5 +47,12 @@ const ConnectedUserList = connect(
   mapStateToProps,
   { setUser }
 )(UserList)
+
+
+UserList.propTypes = {
+  notification: PropTypes.object.isRequired,
+  users: PropTypes.array.isRequired,
+  setUser: PropTypes.func.isRequired
+}
 
 export default ConnectedUserList

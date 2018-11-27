@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Table } from 'semantic-ui-react'
 import { setBlog } from './../reducers/blogReducer'
+import PropTypes from 'prop-types'
 
 class BlogList extends React.Component {
   constructor() {
@@ -45,10 +46,15 @@ const mapStateToProps = (state) => {
   }
 }
 
-
 const ConnectedBlogList = connect(
   mapStateToProps,
   { setBlog }
 )(BlogList)
+
+BlogList.propTypes = {
+  notification: PropTypes.object.isRequired,
+  blogs: PropTypes.array.isRequired,
+  setBlog: PropTypes.func.isRequired
+}
 
 export default ConnectedBlogList

@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Grid, Container } from 'semantic-ui-react'
+import PropTypes from 'prop-types'
 
 class User extends React.Component {
 
@@ -48,4 +49,10 @@ const ConnectedUser = connect(
   mapStateToProps
 )(User)
 
+
+User.propTypes = {
+  notification: PropTypes.object.isRequired,
+  users: PropTypes.array.isRequired,
+  user: PropTypes.object.isRequired
+}
 export default ConnectedUser

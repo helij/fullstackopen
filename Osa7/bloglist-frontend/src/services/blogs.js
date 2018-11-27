@@ -9,9 +9,9 @@ const config = () => {
   }
 }
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+const getAll = async () => {
+  const response = await axios.get(baseUrl)
+  return response.data
 }
 
 const setToken = (newToken) => {
@@ -29,13 +29,13 @@ const addComment = async (id, comment) => {
 }
 
 const update = async (id, newObject) => {
-  const request = axios.put(`${baseUrl}/${id}`, newObject, config())
-  return request.then(response => response.data)
+  const response = await axios.put(`${baseUrl}/${id}`, newObject, config())
+  return response.data
 }
 
 const remove = async (id) => {
-  const request = axios.delete(`${baseUrl}/${id}`, config())
-  return request.then(response => response.data)
+  const response = await axios.delete(`${baseUrl}/${id}`, config())
+  return response.data
 }
 
 export default { getAll, create, update, remove, setToken, addComment }

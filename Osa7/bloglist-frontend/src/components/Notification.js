@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
 class Notification extends React.Component {
   render() {
@@ -28,5 +29,10 @@ const mapStateToProps = (state) => {
 const ConnectedNotification = connect(
   mapStateToProps
 )(Notification)
+
+Notification.propTypes = {
+  notification: PropTypes.object.isRequired
+}
+
 
 export default ConnectedNotification
