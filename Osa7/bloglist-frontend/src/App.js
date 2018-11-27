@@ -25,8 +25,7 @@ class App extends React.Component {
     this.state = {
       title: '',
       author: '',
-      url: '',
-      notification: null
+      url: ''
     }
   }
 
@@ -107,7 +106,6 @@ class App extends React.Component {
         <Router>
           <div>
             <h2>blog app</h2>
-            <Notification notification={this.state.notification} />
             {this.MenuNav()} 
             <Container className='container-padding'>
               <Togglable buttonLabel='uusi blogi'>
