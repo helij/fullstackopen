@@ -1,5 +1,5 @@
 import React from 'react'
-import { HashRouter as Router, Route, NavLink } from 'react-router-dom'
+import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
 import Blog from './components/Blog'
 import BlogList from './components/BlogList'
 import UserList from './components/UserList'
